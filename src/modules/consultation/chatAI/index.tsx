@@ -62,7 +62,7 @@ const ChatAI = () => {
   const [respond, setRespond] = useState("");
   const [prompt, setPrompt] = useState("");
   const [data, setData] = useState([]);
-  const API_KEY = process.env.NEXT_SECRET_OPENAI_API_KEY;
+  const API_KEY = process.env.NEXT_SECRET_OPENAI_API_KEY; // Replace with your actual API key
 
   useEffect(() => {
     getData();
@@ -70,7 +70,7 @@ const ChatAI = () => {
 
   async function getData() {
     try {
-      const { data, error }: any = await supabase.from("products").select();
+      const { data, error } : any = await supabase.from("products").select();
       if (error) throw error;
       setData(data);
       console.log(data);
@@ -79,32 +79,42 @@ const ChatAI = () => {
     }
   }
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e : any) => {
     e.preventDefault();
     const promptAwal =
       "kamu adalah seorang customer service untuk sebuah e-commerce agro yang akan menjawab masalah masalah dan memberikan informasi dalam bidang agro, dan jika ada pertanyaan diluar bidang agro, ingatkan customer bahwa anda adalah cs agro";
 
     const APIBody = {
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
       messages: [
         {
+          role: "system",
+          content: promptAwal,
+        },
+        {
           role: "user",
-          content: `${promptAwal} + pertanyaan dari user: ${prompt}`,
+          content: `pertanyaan dari user: ${prompt}`,
         },
       ],
     };
 
     try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Authorization", `Bearer ${API_KEY}`);
+
+      const raw = JSON.stringify(APIBody);
+
+      const requestOptions : any = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+
       const response = await fetch(
         "https://api.openai.com/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${API_KEY}`,
-          },
-          body: JSON.stringify(APIBody),
-        }
+        requestOptions
       );
 
       if (!response.ok) {
@@ -115,7 +125,13 @@ const ChatAI = () => {
 
       const data = await response.json();
       console.log(data);
-      setRespond(data.choices[0].message.content);
+
+      // Format response content with line breaks
+      const formattedResponse = data.choices[0].message.content
+        .replace(/\n/g, "<br />")
+        .replace(/(\d+\.\s)/g, '<strong>$1</strong>');
+
+      setRespond(formattedResponse);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -125,7 +141,7 @@ const ChatAI = () => {
     <div className="pt-28 p-10 h-screen">
       <form onSubmit={handleSubmit}>
         <div className="h-96 overflow-y-auto p-4 bg-gray-100 rounded">
-          {respond}
+          <div className="text-emerald-500" dangerouslySetInnerHTML={{ __html: respond }} />
         </div>
         <div className="flex items-center gap-5 mt-4">
           <input
