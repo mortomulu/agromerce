@@ -19,13 +19,32 @@ export async function getProducts() {
   }
 }
 
+export const getProduct = async (id: number) => {
+  const url = process.env.NEXT_PUBLIC_BASE_URL;
+
+  try {
+    const response = await fetch(`${url}/api/products/${id}`, {
+      method: "GET",
+      next: { revalidate: 10 },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete product");
+    }
+
+    console.log("Product GET successfully");
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return NextResponse.json(new Error("Failed to delete product"));
+  }
+};
+
 export const postProduct = async (productData: any, fileImage: File) => {
   const supabase = createClientComponentClient();
 
   const url = process.env.NEXT_PUBLIC_BASE_URL;
-
-  console.log(productData);
-  console.log(fileImage);
 
   const { data: fileData, error: fileError } = await supabase.storage
     .from("image")

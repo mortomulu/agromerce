@@ -29,6 +29,7 @@ const Navbar = () => {
 
   if (
     pathname == "/" ||
+    /^\/detail-product\/\d+$/.test(pathname) ||
     pathname == "/consultation" ||
     pathname == "/compare"
   ) {

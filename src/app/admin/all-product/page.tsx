@@ -7,10 +7,11 @@ import { AllProduct } from "@/modules/allProduct/module";
 const AllProductPage = () => {
   // const router = useRouter();
 
-  // const { data: session, status }: { data: any; status: string } = useSession();
+  // const { data: session, status } : {data : any, status: string} = useSession();
+
 
   // useEffect(() => {
-  //   if (status === "unauthenticated" && session?.user.role !== "admin") {
+  //   if (status === "unauthenticated" && session?.user.role !== 'admin') {
   //     router.push("/");
   //   }
   // }, [router, status]);
