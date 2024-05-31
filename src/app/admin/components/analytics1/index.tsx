@@ -1,4 +1,4 @@
-import CardDataStats from "@/components/CardDataStats/CardDataStats";
+import CardDataStats from "./CardDataStats";
 
 const CardAnalytics1 = () => {
   return (
@@ -129,8 +129,6 @@ const CardAnalytics1 = () => {
           />
         </svg>
       </CardDataStats>
-      
-       
     </div>
   );
 };

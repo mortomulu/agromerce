@@ -6,7 +6,7 @@ export const Dashboard = () => {
     <div>
       <AdminLayout>
         <div className="h-auto flex">
-            <CardAnalytics1/>
+          <CardAnalytics1 />
         </div>
       </AdminLayout>
     </div>
