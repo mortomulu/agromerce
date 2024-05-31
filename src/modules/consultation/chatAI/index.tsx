@@ -131,17 +131,33 @@ const ChatAI = () => {
         .replace(/\n/g, "<br />")
         .replace(/(\d+\.\s)/g, '<strong>$1</strong>');
 
-      setRespond(formattedResponse);
+      displayResponse(formattedResponse);
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  const displayResponse = (text : any) => {
+    setRespond("");
+    let index = 0;
+    const intervalId = setInterval(() => {
+      if (index < text.length - 1) {
+        setRespond((prev) => prev + text[index]);
+        index++;
+      } else {
+        clearInterval(intervalId);
+      }
+    }, 50); // Adjust the interval duration (in milliseconds) as needed
   };
 
   return (
     <div className="pt-28 p-10 h-screen">
       <form onSubmit={handleSubmit}>
         <div className="h-96 overflow-y-auto p-4 bg-gray-100 rounded">
-          <div className="text-emerald-500" dangerouslySetInnerHTML={{ __html: respond }} />
+          <div
+            className="text-emerald-500"
+            dangerouslySetInnerHTML={{ __html: respond || "&nbsp;" }} // Ensure not to render "undefined"
+          />
         </div>
         <div className="flex items-center gap-5 mt-4">
           <input
