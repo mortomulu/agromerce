@@ -1,4 +1,4 @@
-import CardDataStats from "./CardDataStats";
+import CardDataStats from "@/components/Dashboard/CardDataStats";
 
 const CardAnalytics1 = () => {
   return (
