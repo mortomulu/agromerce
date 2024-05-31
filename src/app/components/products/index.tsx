@@ -1,6 +1,6 @@
 import { getProducts } from "@/lib/crudProduct/dbData";
 import { Product } from "@/types/product";
-import ProductCard from "@/components/Landing/ProductCard";
+import ProductCard from "./ProductCard";
 
 const Products = async () => {
   const products = await getProducts();
