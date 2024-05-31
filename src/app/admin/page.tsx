@@ -4,7 +4,7 @@ import CardDataStatsContainer from "@/components/CardDataStats/CardDataStatsCont
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Dashboard } from "@/modules/dashboard/module";
+import { Dashboard } from "./components";
 
 export default function DashboardPage() {
   const router = useRouter();
