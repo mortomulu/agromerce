@@ -1,5 +1,5 @@
 import { getProduct } from "@/lib/crudProduct/dbData";
-import DetalProductModule from "@/modules/detailProduct/module";
+import DetalProductModule from "./components";
 
 interface Product {
     product: {
