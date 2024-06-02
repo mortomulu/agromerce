@@ -7,13 +7,7 @@ const TableAllProduct = async () => {
   const todos = await getProducts();
 
   return (
-    <div className="w-screen ml-56 p-10 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-      <div className="px-4 py-6 md:px-6 xl:px-7.5">
-        <h4 className="text-xl font-semibold text-black dark:text-white">
-          All Product
-        </h4>
-      </div>
-
+    <div className="w-fit  rounded-sm border-stroke  shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="grid grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5">
         <div className="col-span-2 flex items-center">
           <p className="font-medium">Product Name</p>
@@ -43,9 +37,10 @@ const TableAllProduct = async () => {
                 <div className="h-12.5! w-15 flex rounded-md">
                   <Image
                     src={product.url_image}
-                    width={60}
+                    width={50}
                     height={50}
                     alt="Product"
+                    className="overflow-hidden w-auto h-auto"
                   />
                 </div>
                 <p className="text-sm text-black dark:text-white">
