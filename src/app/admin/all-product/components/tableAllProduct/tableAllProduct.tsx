@@ -1,5 +1,3 @@
-
-
 import { Product } from "@/types/product";
 import Action from "./Action";
 import { getProducts } from "@/lib/crudProduct/dbData";
@@ -8,7 +6,6 @@ import Image from "next/image";
 const TableAllProduct = async () => {
   try {
     const todos = await getProducts();
-    
 
     return (
       <div className="w-screen ml-56 p-10 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -36,44 +33,45 @@ const TableAllProduct = async () => {
           </div>
         </div>
 
-        {todos.map((product: Product, key: number) => (
-          <div
-            className="grid grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5"
-            key={key}
-          >
-            <div className="col-span-2 flex items-center">
-              <div className="flex items-center gap-4 sm:flex-row sm:items-center">
-                <div className="h-12.5! w-15 flex rounded-md">
-                  <Image
-                    src={product.url_image}
-                    width={60}
-                    height={50}
-                    alt="Product"
-                  />
+        {todos &&
+          todos.map((product: Product, key: number) => (
+            <div
+              className="grid grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5"
+              key={key}
+            >
+              <div className="col-span-2 flex items-center">
+                <div className="flex items-center gap-4 sm:flex-row sm:items-center">
+                  <div className="h-12.5! w-15 flex rounded-md">
+                    <Image
+                      src={product.url_image}
+                      width={60}
+                      height={50}
+                      alt="Product"
+                    />
+                  </div>
+                  <p className="text-sm text-black dark:text-white">
+                    {product.product_name}
+                  </p>
                 </div>
+              </div>
+              <div className="col-span-1 hidden items-center sm:flex">
                 <p className="text-sm text-black dark:text-white">
-                  {product.product_name}
+                  {product.product_category}
                 </p>
               </div>
+              <div className="col-span-1 flex items-center justify-center">
+                <p className="text-sm text-black dark:text-white">
+                  ${product.price}
+                </p>
+              </div>
+              <div className="col-span-2  flex items-center ml-8">
+                <p className="text-sm text-black dark:text-white truncate">
+                  {product.desc}
+                </p>
+              </div>
+              <Action id={product.id} />
             </div>
-            <div className="col-span-1 hidden items-center sm:flex">
-              <p className="text-sm text-black dark:text-white">
-                {product.product_category}
-              </p>
-            </div>
-            <div className="col-span-1 flex items-center justify-center">
-              <p className="text-sm text-black dark:text-white">
-                ${product.price}
-              </p>
-            </div>
-            <div className="col-span-2  flex items-center ml-8">
-              <p className="text-sm text-black dark:text-white truncate">
-                {product.desc}
-              </p>
-            </div>
-            <Action id={product.id} />
-          </div>
-        ))}
+          ))}
       </div>
     );
   } catch (error) {
