@@ -19,6 +19,7 @@ const nextConfig = {
     NEXT_SECRET_EMAIL: process.env.NEXT_SECRET_EMAIL,
     NEXT_SECRET_PASSWORD: process.env.NEXT_SECRET_PASSWORD,
     NEXT_SECRET_OPENAI_API_KEY: process.env.NEXT_SECRET_OPENAI_API_KEY,
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   },
   async headers() {
     return [
