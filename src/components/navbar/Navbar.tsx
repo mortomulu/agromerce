@@ -8,10 +8,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
 import SideNavbar from "../Sidebar/SideNavbar";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/index";
+import { useEffect, useState } from "react";
 
 const Navbar = () => {
   const pathname = usePathname();
   const { data: session, status } = useSession();
+  const cart = useSelector((state: RootState) => state.cart.products);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   if (
     pathname == "/" ||
@@ -22,7 +31,7 @@ const Navbar = () => {
     pathname == "/favorite"
   ) {
     return (
-      <div className="navbar bg-white mb-8 fixed top-0 z-10">
+      <div className="navbar bg-white mb-8 fixed top-0 z-50">
         <div className="navbar-start w-1/5">
           <Link href={"/"} className="btn btn-ghost text-xl">
             <span className="text-green-500 -mr-1">Agro</span>Merce
@@ -65,11 +74,18 @@ const Navbar = () => {
               <FaBalanceScale className="w-8 h-8" />
             </button>
           </Link>
-          <Link href={"/cart"}>
-            <button>
-              <FaShoppingCart className="w-7 h-7" />
-            </button>
-          </Link>
+          <div className="relative">
+            {isClient && cart.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs">
+                {cart.length}
+              </span>
+            )}
+            <Link href={"/cart"}>
+              <button>
+                <FaShoppingCart className="w-7 h-7" />
+              </button>
+            </Link>
+          </div>
           <Link href={"/favorite"}>
             <button>
               <FaHeart className="w-7 h-7" />
