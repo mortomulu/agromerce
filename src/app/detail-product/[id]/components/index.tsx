@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { FaHeart, FaShoppingCart } from "react-icons/fa";
 import Layout from "@/components/layout/layout";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import {
   removeFromCart,
   updateQuantity,
 } from "@/redux/slices/cartSlice";
+import { useEffect } from "react";
 
 interface Product {
   id: string;
@@ -28,15 +29,18 @@ export default function DetalProductModule(product: any) {
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.cart.products);
 
-  const handleAddToCart = (e : any) => {
-    e.preventDefault()
+  useEffect(() => {
+    saveCartToLocalStorage(cart);
+  }, [cart]);
+
+  const handleAddToCart = (e: any) => {
+    e.preventDefault();
     dispatch(
-      addToCart({ id: product?.product[0].id, quantity: 1, product:product?.product[0] })
+      addToCart({ id: product?.product[0].id, quantity: 1, product: product?.product[0] })
     );
-    saveCartToLocalStorage(cart)
   };
 
-  const saveCartToLocalStorage = (updatedCart : any) => {
+  const saveCartToLocalStorage = (updatedCart: any) => {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 

@@ -1,11 +1,8 @@
-"use client";
-import { SessionProvider } from "next-auth/react";
-import {  useDispatch } from "react-redux";
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { initializeCart } from '@/redux/slices/cartSlice';
 
-
-export const SessionProviderClient = ({ children }: any) => {
+export const useInitializeCart = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,12 +24,4 @@ export const SessionProviderClient = ({ children }: any) => {
       dispatch(initializeCart(cart));
     }
   }, [dispatch]);
-  
-  return (
-    <div>
-      <SessionProvider>
-            {children}
-      </SessionProvider>
-    </div>
-  );
 };
