@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/index";
 import { useEffect, useState } from "react";
 import PreloadCart from "@/components/Preload/PreloadCart";
-import { updateQuantity } from "@/redux/slices/cartSlice";
+import { removeFromCart, updateQuantity } from "@/redux/slices/cartSlice";
 
 const Cart = () => {
   const cart = useSelector((state: RootState) => state.cart.products);
@@ -29,6 +29,10 @@ const Cart = () => {
     if (item.quantity > 1) {
       dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }));
     }
+  };
+
+  const handleRemove = (itemId: number) => {
+    dispatch(removeFromCart(itemId));
   };
 
   if (!isClient) {
@@ -84,7 +88,12 @@ const Cart = () => {
                     >
                       <p className="text-gray-500 text-sm">+</p>
                     </button>
-                    <button className="btn-sm btn-red">Remove</button>
+                    <button
+                      onClick={() => handleRemove(item?.product?.id)}
+                      className="btn-sm btn-red"
+                    >
+                      Remove
+                    </button>
                   </div>
                 </div>
               </div>
