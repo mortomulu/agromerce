@@ -27,14 +27,17 @@ interface DetalProductModuleProps {
 export default function DetalProductModule(product: any) {
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.cart.products);
-  console.log(cart)
-
 
   const handleAddToCart = (e : any) => {
     e.preventDefault()
     dispatch(
-      addToCart({ id: product?.product[0].id, quantity: 1 })
+      addToCart({ id: product?.product[0].id, quantity: 1, product:product?.product[0] })
     );
+    saveCartToLocalStorage(cart)
+  };
+
+  const saveCartToLocalStorage = (updatedCart : any) => {
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
   return (

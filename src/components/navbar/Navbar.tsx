@@ -6,20 +6,6 @@ import { FaBalanceScale } from "react-icons/fa";
 import { Button, Tooltip } from "flowbite-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import path from "path";
-
-// sidebar
-import { Sidebar } from "flowbite-react";
-import { BiBuoy, BiLogOutCircle, BiSolidCartAdd } from "react-icons/bi";
-import {
-  HiArrowSmRight,
-  HiChartPie,
-  HiInbox,
-  HiShoppingBag,
-  HiTable,
-  HiUser,
-  HiViewBoards,
-} from "react-icons/hi";
 import { signIn, signOut, useSession } from "next-auth/react";
 import SideNavbar from "../Sidebar/SideNavbar";
 
@@ -31,7 +17,9 @@ const Navbar = () => {
     pathname == "/" ||
     /^\/detail-product\/\d+$/.test(pathname) ||
     pathname == "/consultation" ||
-    pathname == "/compare"
+    pathname == "/compare" ||
+    pathname == "/cart" ||
+    pathname == "/favorite"
   ) {
     return (
       <div className="navbar bg-white mb-8 fixed top-0 z-10">
@@ -58,7 +46,7 @@ const Navbar = () => {
                   : "text-black"
               }
             >
-              <a href="/consultation">Consultation</a>
+              <Link href="/consultation">Consultation</Link>
             </div>
             <div
               className={
@@ -72,9 +60,21 @@ const Navbar = () => {
           </div>
         </div>
         <div className="navbar-end flex gap-8">
-          <FaBalanceScale className="w-8 h-8" />
-          <FaShoppingCart className="w-7 h-7" />
-          <FaHeart className="w-7 h-7" />
+          <Link href={"/compare"}>
+            <button>
+              <FaBalanceScale className="w-8 h-8" />
+            </button>
+          </Link>
+          <Link href={"/cart"}>
+            <button>
+              <FaShoppingCart className="w-7 h-7" />
+            </button>
+          </Link>
+          <Link href={"/favorite"}>
+            <button>
+              <FaHeart className="w-7 h-7" />
+            </button>
+          </Link>
           {status === "unauthenticated" ? (
             <div className="btn text-white" onClick={() => signIn()}>
               {" "}
