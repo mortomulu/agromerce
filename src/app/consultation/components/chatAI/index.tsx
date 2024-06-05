@@ -70,7 +70,7 @@ const ChatAI = () => {
 
   async function getData() {
     try {
-      const { data, error } : any = await supabase.from("products").select();
+      const { data, error }: any = await supabase.from("products").select();
       if (error) throw error;
       setData(data);
       console.log(data);
@@ -79,7 +79,7 @@ const ChatAI = () => {
     }
   }
 
-  const handleSubmit = async (e : any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const promptAwal =
       "kamu adalah seorang customer service untuk sebuah e-commerce agro yang akan menjawab masalah masalah dan memberikan informasi dalam bidang agro, dan jika ada pertanyaan diluar bidang agro, ingatkan customer bahwa anda adalah cs agro";
@@ -105,7 +105,7 @@ const ChatAI = () => {
 
       const raw = JSON.stringify(APIBody);
 
-      const requestOptions : any = {
+      const requestOptions: any = {
         method: "POST",
         headers: myHeaders,
         body: raw,
@@ -129,7 +129,7 @@ const ChatAI = () => {
       // Format response content with line breaks
       const formattedResponse = data.choices[0].message.content
         .replace(/\n/g, "<br />")
-        .replace(/(\d+\.\s)/g, '<strong>$1</strong>');
+        .replace(/(\d+\.\s)/g, "<strong>$1</strong>");
 
       setRespond(formattedResponse);
     } catch (error) {
