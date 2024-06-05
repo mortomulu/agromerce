@@ -8,10 +8,10 @@ interface TypeLayout {
 
 const Layout: NextPage<TypeLayout> = (props): ReactElement => {
   return (
-    <div>
+    <>
       <Navbar />
-      <div>{props?.children}</div>
-    </div>
+      <>{props?.children}</>
+    </>
   );
 };
 

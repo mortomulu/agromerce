@@ -1,22 +1,49 @@
+"use client";
 import { FaHeart, FaShoppingCart } from "react-icons/fa";
 import Layout from "@/components/layout/layout";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/index";
+import {
+  addToCart,
+  removeFromCart,
+  updateQuantity,
+} from "@/redux/slices/cartSlice";
+import { useEffect } from "react";
 
 interface Product {
-    id: string;
-    created_at: string;
-    product_name: string;
-    price: number;
-    product_category: string;
-    url_image: string;
-    desc: string;
-  }
+  id: string;
+  created_at: string;
+  product_name: string;
+  price: number;
+  product_category: string;
+  url_image: string;
+  desc: string;
+}
 
 interface DetalProductModuleProps {
   product: any;
-  params: Product
+  params: Product;
 }
 
 export default function DetalProductModule(product: any) {
+  const dispatch = useDispatch();
+  const cart = useSelector((state: RootState) => state.cart.products);
+
+  useEffect(() => {
+    saveCartToLocalStorage(cart);
+  }, [cart]);
+
+  const handleAddToCart = (e: any) => {
+    e.preventDefault();
+    dispatch(
+      addToCart({ id: product?.product[0].id, quantity: 1, product: product?.product[0] })
+    );
+  };
+
+  const saveCartToLocalStorage = (updatedCart: any) => {
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
   return (
     <>
       <Layout>
@@ -55,15 +82,15 @@ export default function DetalProductModule(product: any) {
                     <FaHeart />
                     Add to favorites
                   </a>
-                  <a
-                    href="#"
+                  <button
                     title=""
                     className="flex items-center justify-center gap-4 py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                     role="button"
+                    onClick={handleAddToCart}
                   >
                     <FaShoppingCart />
                     Add to Cart
-                  </a>
+                  </button>
                 </div>
 
                 <hr className="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
