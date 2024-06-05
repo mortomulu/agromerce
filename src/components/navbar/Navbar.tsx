@@ -13,7 +13,9 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { IoClose } from "react-icons/io5";
 import { FaTrashCan } from "react-icons/fa6";
-import { removeFromCompare } from "@/redux/slices/compareSlice";
+import { removeFromCompare, resetCompare } from "@/redux/slices/compareSlice";
+import { setMessage } from "@/redux/slices/messagesSlice";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -24,6 +26,8 @@ const Navbar = () => {
   );
   const [isClient, setIsClient] = useState(false);
   const dispatch = useDispatch();
+  const API_KEY = process.env.NEXT_SECRET_OPENAI_API_KEY; // Replace with your actual API key
+  const router = useRouter()
 
   useEffect(() => {
     setIsClient(true);
@@ -38,6 +42,63 @@ const Navbar = () => {
 
     const handleToggle = () => {
       setIsOpen(!isOpen);
+    };
+
+    const handleCompare = async (e: any) => {
+      e.preventDefault();
+      const systemBehaviour =
+        "Kamu akan melakukan komparasi produk dengan membandingan kedua produk berdasarkan data yang dikirim dengan output tabel kelebihan dan kekurangan masing masing produk";
+
+      const APIBody = {
+        model: "gpt-4",
+        messages: [
+          {
+            role: "system",
+            content: systemBehaviour,
+          },
+          {
+            role: "user",
+            content: `Komparasi produk tersebut: Produk Pertama: ${compare[0].product.desc} Produk Kedua:${compare[1].product.desc}`,
+          },
+        ],
+      };
+
+      try {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", `Bearer ${API_KEY}`);
+
+        const raw = JSON.stringify(APIBody);
+
+        const requestOptions: any = {
+          method: "POST",
+          headers: myHeaders,
+          body: raw,
+          redirect: "follow",
+        };
+
+        console.log(requestOptions.body);
+
+        const response = await fetch(
+          "https://api.openai.com/v1/chat/completions",
+          requestOptions
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch: ${response.status} ${response.statusText}`
+          );
+        }
+
+        const data = await response.json();
+        const messageContent = data.choices[0].message.content;
+
+        dispatch(setMessage(messageContent));
+        dispatch(resetCompare());
+        router.push("/compare"); 
+      } catch (error) {
+        console.error("Error:", error);
+      }
     };
 
     return (
@@ -72,7 +133,9 @@ const Navbar = () => {
                           {item.product.product_name}
                         </p>
                         <button
-                          onClick={() => handleRemoveFromCompare(item.product.id)}
+                          onClick={() =>
+                            handleRemoveFromCompare(item.product.id)
+                          }
                           className="ml-auto"
                         >
                           <FaTrashCan />
@@ -83,11 +146,10 @@ const Navbar = () => {
                 ) : (
                   <p className="text-gray-700">No products to compare.</p>
                 )}
-                
               </div>
               {compare.length >= 2 ? (
                 <button
-                  onClick={handleToggle}
+                  onClick={(e) => handleCompare(e)}
                   className="mt-4 w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
                 >
                   Ready to Compare!
