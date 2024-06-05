@@ -26,7 +26,7 @@ const Navbar = () => {
   );
   const [isClient, setIsClient] = useState(false);
   const dispatch = useDispatch();
-  const API_KEY = process.env.NEXT_SECRET_OPENAI_API_KEY; // Replace with your actual API key
+  const API_KEY = process.env.NEXT_SECRET_OPENAI_API_KEY;
   const router = useRouter()
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const Navbar = () => {
     const handleCompare = async (e: any) => {
       e.preventDefault();
       const systemBehaviour =
-        "Kamu akan melakukan komparasi produk dengan membandingan kedua produk berdasarkan data yang dikirim dengan output tabel kelebihan dan kekurangan masing masing produk";
+        "Kamu akan melakukan komparasi produk dengan membandingan kedua produk berdasarkan data yang dikirim dengan output json kelebihan dan kekurangan masing masing produk";
 
       const APIBody = {
         model: "gpt-4",
