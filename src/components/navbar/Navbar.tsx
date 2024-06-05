@@ -3,24 +3,110 @@
 import { FaShoppingCart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
 import { FaBalanceScale } from "react-icons/fa";
-import { Button, Tooltip } from "flowbite-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import SideNavbar from "../Sidebar/SideNavbar";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/index";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import { IoClose } from "react-icons/io5";
+import { FaTrashCan } from "react-icons/fa6";
+import { removeFromCompare } from "@/redux/slices/compareSlice";
 
 const Navbar = () => {
   const pathname = usePathname();
   const { data: session, status } = useSession();
-  const cart = useSelector((state: RootState) => state.cart.products);
+  const cart: any[] = useSelector((state: RootState) => state.cart.products);
+  const compare: any[] = useSelector(
+    (state: RootState) => state.compare.products
+  );
   const [isClient, setIsClient] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  const CompareModal = () => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleRemoveFromCompare = (productId: number) => {
+      dispatch(removeFromCompare(productId));
+    };
+
+    const handleToggle = () => {
+      setIsOpen(!isOpen);
+    };
+
+    return (
+      <div className="relative inline-block text-left">
+        <button onClick={handleToggle} className="focus:outline-none">
+          <FaBalanceScale className="w-8 h-8 text-black hover:text-gray-900" />
+        </button>
+
+        {isOpen && (
+          <div className="absolute z-10 mt-2 right-0 w-72 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+            <button onClick={handleToggle} className="absolute right-2 top-2">
+              <IoClose className="text-lg" />
+            </button>
+            <div className="py-4 px-6">
+              <h2 className="text-lg font-bold mb-4">Compare Products</h2>
+              <div className="bg-gray-100 p-4 rounded-md">
+                {compare.length > 0 ? (
+                  <>
+                    {compare.slice(0, 2).map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 border-b py-2 last:border-0"
+                      >
+                        <Image
+                          src={item.product.url_image}
+                          alt={item.product.product_name}
+                          width={50}
+                          height={50}
+                          className="w-auto h-auto"
+                        />
+                        <p className="text-gray-700">
+                          {item.product.product_name}
+                        </p>
+                        <button
+                          onClick={() => handleRemoveFromCompare(item.product.id)}
+                          className="ml-auto"
+                        >
+                          <FaTrashCan />
+                        </button>
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  <p className="text-gray-700">No products to compare.</p>
+                )}
+                
+              </div>
+              {compare.length >= 2 ? (
+                <button
+                  onClick={handleToggle}
+                  className="mt-4 w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+                >
+                  Ready to Compare!
+                </button>
+              ) : (
+                <button
+                  onClick={handleToggle}
+                  disabled
+                  className="mt-4 w-full px-4 py-2 bg-gray-500 text-white rounded-md focus:outline-none"
+                >
+                  Ready to Compare!
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   if (
     pathname == "/" ||
@@ -68,41 +154,39 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        <div className="navbar-end flex gap-8">
-          <Link href={"/compare"}>
-            <button>
-              <FaBalanceScale className="w-8 h-8" />
-            </button>
-          </Link>
-          <div className="relative">
-            {isClient && cart.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs">
-                {cart.length}
-              </span>
-            )}
-            <Link href={"/cart"}>
+        {isClient && (
+          <div className="navbar-end flex gap-8">
+            <CompareModal />
+            <div className="relative">
+              {cart.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs">
+                  {cart.length}
+                </span>
+              )}
+              <Link href={"/cart"}>
+                <button>
+                  <FaShoppingCart className="w-7 h-7" />
+                </button>
+              </Link>
+            </div>
+            <Link href={"/favorite"}>
               <button>
-                <FaShoppingCart className="w-7 h-7" />
+                <FaHeart className="w-7 h-7" />
               </button>
             </Link>
+            {status === "unauthenticated" ? (
+              <div className="btn text-white" onClick={() => signIn()}>
+                {" "}
+                Sign In
+              </div>
+            ) : (
+              <Link href={"/admin"} className="btn text-white">
+                {" "}
+                Dashboard
+              </Link>
+            )}
           </div>
-          <Link href={"/favorite"}>
-            <button>
-              <FaHeart className="w-7 h-7" />
-            </button>
-          </Link>
-          {status === "unauthenticated" ? (
-            <div className="btn text-white" onClick={() => signIn()}>
-              {" "}
-              Sign In
-            </div>
-          ) : (
-            <Link href={"/admin"} className="btn text-white">
-              {" "}
-              Dashboard
-            </Link>
-          )}
-        </div>
+        )}
       </div>
     );
   }
