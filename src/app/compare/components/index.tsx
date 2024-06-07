@@ -1,12 +1,25 @@
-"use client"
+"use client";
 import Layout from "@/components/layout/layout";
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/index';
 import { useEffect, useState } from 'react';
 
+interface Product {
+  name: string;
+  advantages: string[];
+  disadvantages: string[];
+}
+
+interface Comparison {
+  product1: Product;
+  product2: Product;
+}
+
 const Compare = () => {
   const [loading, setLoading] = useState(true);
   const messages: string = useSelector((state: RootState) => state.messages.content);
+
+  console.log(messages)
   
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -16,11 +29,43 @@ const Compare = () => {
     return () => clearTimeout(timer);
   }, [messages]);
 
-  const rows = messages.split('|').map(row => row.trim()).filter(row => row !== '');
-  const formattedMessages = rows.map(row => {
-    const columns = row.split('|').map(col => col.trim()).filter(col => col !== '');
-    return columns;
-  });
+  const parseMessages = (messages: string): Comparison => {
+    // Split the messages into lines
+    const lines = messages.split('\n').map(line => line.trim()).filter(line => line !== '');
+
+    // Initialize product objects
+    const product1: Product = { name: '', advantages: [], disadvantages: [] };
+    const product2: Product = { name: '', advantages: [], disadvantages: [] };
+
+    // Track which product we are currently filling data for
+    let currentProduct: Product | null = null;
+    let currentSection: 'advantages' | 'disadvantages' | null = null;
+
+    lines.forEach(line => {
+      if (line.startsWith('Produk 1:')) {
+        product1.name = line.replace('Produk 1:', '').trim();
+        currentProduct = product1;
+        currentSection = null;
+      } else if (line.startsWith('Produk 2:')) {
+        product2.name = line.replace('Produk 2:', '').trim();
+        currentProduct = product2;
+        currentSection = null;
+      } else if (line.startsWith('Kelebihan:')) {
+        currentSection = 'advantages';
+      } else if (line.startsWith('Kekurangan:')) {
+        currentSection = 'disadvantages';
+      } else if (currentProduct && currentSection) {
+        currentProduct[currentSection].push(line.replace('-', '').trim());
+      }
+    });
+
+    return {
+      product1,
+      product2
+    };
+  };
+
+  const comparison: Comparison = parseMessages(messages);
 
   if (loading) {
     return (
@@ -39,13 +84,32 @@ const Compare = () => {
           <h1 className="text-2xl font-semibold mb-4">Compare Page</h1>
           <div className="bg-white p-4 rounded-md shadow-md">
             <h2 className="text-lg font-semibold mb-2">Messages:</h2>
-            <table className="table-auto">
+            <table className="table-auto w-full">
+              <thead>
+                <tr>
+                  <th className="border px-4 py-2">Product</th>
+                  <th className="border px-4 py-2">Advantages</th>
+                  <th className="border px-4 py-2">Disadvantages</th>
+                </tr>
+              </thead>
               <tbody>
-                {formattedMessages.map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {row.map((col, colIndex) => (
-                      <td key={colIndex} className="border px-4 py-2">{col}</td>
-                    ))}
+                {[comparison.product1, comparison.product2].map((product, index) => (
+                  <tr key={index}>
+                    <td className="border px-4 py-2">{product.name}</td>
+                    <td className="border px-4 py-2">
+                      <ul>
+                        {product.advantages.map((advantage, idx) => (
+                          <li key={idx}>{advantage}</li>
+                        ))}
+                      </ul>
+                    </td>
+                    <td className="border px-4 py-2">
+                      <ul>
+                        {product.disadvantages.map((disadvantage, idx) => (
+                          <li key={idx}>{disadvantage}</li>
+                        ))}
+                      </ul>
+                    </td>
                   </tr>
                 ))}
               </tbody>
