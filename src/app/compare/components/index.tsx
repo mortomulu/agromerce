@@ -19,8 +19,6 @@ const Compare = () => {
   const [loading, setLoading] = useState(true);
   const messages: string = useSelector((state: RootState) => state.messages.content);
 
-  console.log(messages)
-  
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
@@ -33,6 +31,8 @@ const Compare = () => {
     // Split the messages into lines
     const lines = messages.split('\n').map(line => line.trim()).filter(line => line !== '');
 
+    console.log("Lines:", lines); // Debugging: print the lines
+
     // Initialize product objects
     const product1: Product = { name: '', advantages: [], disadvantages: [] };
     const product2: Product = { name: '', advantages: [], disadvantages: [] };
@@ -42,11 +42,11 @@ const Compare = () => {
     let currentSection: 'advantages' | 'disadvantages' | null = null;
 
     lines.forEach(line => {
-      if (line.startsWith('Produk 1:')) {
+      if (line.startsWith('Produk Pertama:')) {
         product1.name = line.replace('Produk 1:', '').trim();
         currentProduct = product1;
         currentSection = null;
-      } else if (line.startsWith('Produk 2:')) {
+      } else if (line.startsWith('Produk Kedua:')) {
         product2.name = line.replace('Produk 2:', '').trim();
         currentProduct = product2;
         currentSection = null;
@@ -59,6 +59,9 @@ const Compare = () => {
       }
     });
 
+    console.log("Product 1:", product1); // Debugging: print product1
+    console.log("Product 2:", product2); // Debugging: print product2
+
     return {
       product1,
       product2
@@ -66,6 +69,8 @@ const Compare = () => {
   };
 
   const comparison: Comparison = parseMessages(messages);
+
+  console.log("Comparison:", comparison); // Debugging: print the comparison
 
   if (loading) {
     return (
