@@ -29,6 +29,36 @@ const Navbar = () => {
   const API_KEY = process.env.NEXT_SECRET_OPENAI_API_KEY;
   const router = useRouter()
 
+  const exOutput = {
+    "ProdukPertama": {
+      "Nama": "Produk Pembasmi Wibu dan Kecoak",
+      "Kelebihan": [
+        "Efektif dalam membasmi wibu dan kecoak yang sering menjadi hama dalam rumah.",
+        "Bisa digunakan dalam berbagai lingkungan, terutama di rumah dan gedung.",
+        "Membantu mencegah penyakit yang bisa ditularkan oleh kecoak."
+      ],
+      "Kekurangan": [
+        "Menggunakan bahan kimia yang mungkin berbahaya jika terpapar pada manusia atau hewan peliharaan.",
+        "Memerlukan waktu untuk melihat efeknya.",
+        "Bisa mencemari lingkungan jika tidak digunakan dengan tepat."
+      ]
+    },
+    "ProdukKedua": {
+      "Nama": "Pupuk Alami",
+      "Kelebihan": [
+        "Memperbaiki kesuburan tanah dengan menambah bahan organik dan nutrisi esensial yang dibutuhkan oleh tanaman.",
+        "Ramah lingkungan dan tidak mencemari lahan pertanian.",
+        "Bisa dihasilkan sendiri dengan mengolah sisa-sisa tanaman dan pupuk kandang."
+      ],
+      "Kekurangan": [
+        "Proses pembuatan membutuhkan waktu yang cukup lama.",
+        "Konsistensi dan kualitas pupuk dapat bervariasi tergantung pada bahan yang digunakan.",
+        "Mungkin tidak mengandung semua nutrisi yang dibutuhkan oleh tanaman."
+      ]
+    }
+  }
+  
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -47,7 +77,9 @@ const Navbar = () => {
     const handleCompare = async (e: any) => {
       e.preventDefault();
       const systemBehaviour =
-        "Kamu akan melakukan komparasi produk dengan membandingan kedua produk berdasarkan data yang dikirim dengan output json kelebihan dan kekurangan masing masing produk";
+        `Kamu akan melakukan komparasi produk dengan membandingan kedua produk berdasarkan data yang dikirim dengan output json kelebihan dan kekurangan masing masing produk dengan contoh teks output seperti ini ${exOutput}`;
+
+        console.log(systemBehaviour)
 
       const APIBody = {
         model: "gpt-4",

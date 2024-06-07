@@ -19,6 +19,8 @@ const Compare = () => {
   const [loading, setLoading] = useState(true);
   const messages: string = useSelector((state: RootState) => state.messages.content);
 
+  console.log(messages)
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
@@ -39,7 +41,7 @@ const Compare = () => {
     let currentSection: 'advantages' | 'disadvantages' | null = null;
 
     lines.forEach(line => {
-      if (line.startsWith('Produk Pertama:' || 'Produk 1:')) {
+      if (line.startsWith('Produk Pertama:' || 'Produk 1:' || "Produk Pertama (Pupuk Alami):")) {
         product1.name = line.replace('Produk 1:', '').trim();
         currentProduct = product1;
         currentSection = null;
