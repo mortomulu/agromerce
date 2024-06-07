@@ -28,25 +28,22 @@ const Compare = () => {
   }, [messages]);
 
   const parseMessages = (messages: string): Comparison => {
-    // Split the messages into lines
     const lines = messages.split('\n').map(line => line.trim()).filter(line => line !== '');
 
-    console.log("Lines:", lines); // Debugging: print the lines
+    console.log("Lines:", lines);
 
-    // Initialize product objects
     const product1: Product = { name: '', advantages: [], disadvantages: [] };
     const product2: Product = { name: '', advantages: [], disadvantages: [] };
 
-    // Track which product we are currently filling data for
     let currentProduct: Product | null = null;
     let currentSection: 'advantages' | 'disadvantages' | null = null;
 
     lines.forEach(line => {
-      if (line.startsWith('Produk Pertama:')) {
+      if (line.startsWith('Produk Pertama:' || 'Produk 1:')) {
         product1.name = line.replace('Produk 1:', '').trim();
         currentProduct = product1;
         currentSection = null;
-      } else if (line.startsWith('Produk Kedua:')) {
+      } else if (line.startsWith('Produk Kedua:' || 'Produk 2:')) {
         product2.name = line.replace('Produk 2:', '').trim();
         currentProduct = product2;
         currentSection = null;
@@ -59,8 +56,8 @@ const Compare = () => {
       }
     });
 
-    console.log("Product 1:", product1); // Debugging: print product1
-    console.log("Product 2:", product2); // Debugging: print product2
+    console.log("Product 1:", product1); 
+    console.log("Product 2:", product2); 
 
     return {
       product1,
@@ -70,7 +67,7 @@ const Compare = () => {
 
   const comparison: Comparison = parseMessages(messages);
 
-  console.log("Comparison:", comparison); // Debugging: print the comparison
+  console.log("Comparison:", comparison); 
 
   if (loading) {
     return (
