@@ -6,20 +6,22 @@ import { useEffect, useState } from "react";
 import PreloadCart from "@/components/Preload/PreloadCart";
 import { removeFromCart, updateQuantity } from "@/redux/slices/cartSlice";
 
-const Cart = () => {
-  const cart = useSelector((state: RootState) => state.cart.products);
+const Cart = ({cart} : any) => {
+  const cartRedux = useSelector((state: RootState) => state.cart.products);
   const [isClient, setIsClient] = useState(false);
+  const [cartDB, setCartDB] = useState([])
   const dispatch = useDispatch();
 
   useEffect(() => {
     setIsClient(true);
+    setCartDB(cart.cart)
   }, []);
 
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem("cart", JSON.stringify(cart));
+      localStorage.setItem("cart", JSON.stringify(cartRedux));
     }
-  }, [cart, isClient]);
+  }, [cartRedux, isClient]);
 
   const handleIncrement = (item: any) => {
     dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }));
@@ -44,11 +46,11 @@ const Cart = () => {
       <div className="container mx-auto px-4 py-28">
         <h1 className="text-xl font-bold mb-4">Shopping Cart</h1>
 
-        {cart.length === 0 ? (
-          <p>Your cart is empty.</p>
+        {cartRedux.length === 0 ? (
+          <p>Your cartRedux is empty.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {cart.map((item: any, i) => (
+            {cartRedux.map((item: any, i) => (
               <div
                 key={i}
                 className="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between"
@@ -101,7 +103,7 @@ const Cart = () => {
           </div>
         )}
 
-        {cart.length > 0 && (
+        {cartRedux.length > 0 && (
           <div className="flex justify-end mt-8">
             <button className="btn btn-primary ml-4">Checkout</button>
           </div>
