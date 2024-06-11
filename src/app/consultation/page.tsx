@@ -1,4 +1,4 @@
-import { Consultation } from "@/modules/consultation/module"
+import { Consultation } from "./components"
 
 const consultationPage = () => {
     return <Consultation/>
