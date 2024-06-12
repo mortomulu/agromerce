@@ -5,18 +5,29 @@ import { RootState } from "@/redux/index";
 import { useEffect, useState } from "react";
 import PreloadCart from "@/components/Preload/PreloadCart";
 import { removeFromCart, updateQuantity } from "@/redux/slices/cartSlice";
-// import { updateCheckoutList } from "@/redux/slices/checkoutSlice"; // import action untuk update checkout list
+// import { updateCheckoutList } from "@/redux/slices/checkoutSlice";
 
-const Cart = ({cart} : any) => {
+const Cart = ({ cart }: any) => {
   const cartRedux = useSelector((state: RootState) => state.cart.products);
   const [isClient, setIsClient] = useState(false);
   const [cartDB, setCartDB] = useState([]);
-  const [checkedItems, setCheckedItems] = useState<number[]>([]); // state untuk item yang dichecklist
+  const [checkedItems, setCheckedItems] = useState<number[]>([]); 
   const dispatch = useDispatch();
 
   useEffect(() => {
     setIsClient(true);
-    setCartDB(cart.cart)
+    setCartDB(cart.cart);
+
+    // Load Midtrans Snap script
+    const script = document.createElement("script");
+    script.src = "https://app.sandbox.midtrans.com/snap/snap.js"; // rubah ketika mode production
+    script.setAttribute("data-client-key", "SB-Mid-client-HEgMVPL74xO84DTX");
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
   }, []);
 
   useEffect(() => {
@@ -47,11 +58,32 @@ const Cart = ({cart} : any) => {
     );
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     const checkoutItems = cartRedux.filter((item) =>
       checkedItems.includes(item.id)
     );
-    // dispatch(updateCheckoutList(checkoutItems)); // Mengirim daftar barang yang dichecklist ke Redux
+    try {
+      const response = await fetch("/api/transaction", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ items: checkoutItems }),
+      });
+
+      const { transaction } = await response.json();
+      console.log(transaction);
+
+      window.snap.embed(transaction.token, {
+        embedId: 'midtrans-payment-container',
+        onSuccess: function(result : any) { console.log(result); },
+        onPending: function(result : any) { console.log(result); },
+        onError: function(result : any) { console.log(result); },
+        onClose: function() { console.log('customer closed the popup without finishing the payment'); }
+      });
+    } catch (error) {
+      console.error("Error creating transaction:", error);
+    }
   };
 
   if (!isClient) {
@@ -133,6 +165,7 @@ const Cart = ({cart} : any) => {
             </button>
           </div>
         )}
+        <div id="midtrans-payment-container" className="mt-8"></div>
       </div>
     </Layout>
   );
