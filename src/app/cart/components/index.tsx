@@ -5,11 +5,13 @@ import { RootState } from "@/redux/index";
 import { useEffect, useState } from "react";
 import PreloadCart from "@/components/Preload/PreloadCart";
 import { removeFromCart, updateQuantity } from "@/redux/slices/cartSlice";
+// import { updateCheckoutList } from "@/redux/slices/checkoutSlice"; // import action untuk update checkout list
 
 const Cart = ({cart} : any) => {
   const cartRedux = useSelector((state: RootState) => state.cart.products);
   const [isClient, setIsClient] = useState(false);
-  const [cartDB, setCartDB] = useState([])
+  const [cartDB, setCartDB] = useState([]);
+  const [checkedItems, setCheckedItems] = useState<number[]>([]); // state untuk item yang dichecklist
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -37,6 +39,21 @@ const Cart = ({cart} : any) => {
     dispatch(removeFromCart(itemId));
   };
 
+  const handleCheckboxChange = (itemId: number) => {
+    setCheckedItems((prev) =>
+      prev.includes(itemId)
+        ? prev.filter((id) => id !== itemId)
+        : [...prev, itemId]
+    );
+  };
+
+  const handleCheckout = () => {
+    const checkoutItems = cartRedux.filter((item) =>
+      checkedItems.includes(item.id)
+    );
+    // dispatch(updateCheckoutList(checkoutItems)); // Mengirim daftar barang yang dichecklist ke Redux
+  };
+
   if (!isClient) {
     return <PreloadCart />;
   }
@@ -47,7 +64,7 @@ const Cart = ({cart} : any) => {
         <h1 className="text-xl font-bold mb-4">Shopping Cart</h1>
 
         {cartRedux.length === 0 ? (
-          <p>Your cartRedux is empty.</p>
+          <p>Your cart is empty.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {cartRedux.map((item: any, i) => (
@@ -56,6 +73,12 @@ const Cart = ({cart} : any) => {
                 className="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between"
               >
                 <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    className="mr-4"
+                    checked={checkedItems.includes(item.id)}
+                    onChange={() => handleCheckboxChange(item.id)}
+                  />
                   <img
                     className="w-20 h-20 object-cover rounded-lg mr-4"
                     src={item?.product?.url_image}
@@ -105,7 +128,9 @@ const Cart = ({cart} : any) => {
 
         {cartRedux.length > 0 && (
           <div className="flex justify-end mt-8">
-            <button className="btn btn-primary ml-4">Checkout</button>
+            <button onClick={handleCheckout} className="btn btn-primary ml-4">
+              Checkout
+            </button>
           </div>
         )}
       </div>
