@@ -6,8 +6,8 @@ import midtransClient from "midtrans-client"
 // Create Snap API instance
 const snap = new midtransClient.Snap({
   isProduction: false,
-  serverKey: "SB-Mid-server-41GehegqxYG9edwRBvlIGeOq",
-  clientKey: "SB-Mid-client-HEgMVPL74xO84DTX",
+  serverKey: process.env.NEXT_SECRET_MIDTRANS_SERVER_KEY,
+  clientKey: process.env.NEXT_SECRET_MIDTRANS_CLIENT_KEY,
 });
 
 export async function POST(request) {
