@@ -77,7 +77,7 @@ const Navbar = () => {
     const handleCompare = async (e: any) => {
       e.preventDefault();
       const systemBehaviour =
-        `Kamu akan melakukan komparasi produk dengan membandingan kedua produk berdasarkan data yang dikirim dengan output json kelebihan dan kekurangan masing masing produk dengan contoh teks output seperti ini ${exOutput}`;
+        `Kamu akan melakukan komparasi produk dengan membandingan kedua produk berdasarkan data yang dikirim dengan output json kelebihan dan kekurangan masing masing produk dengan contoh teks output seperti ini ${exOutput} dan pada produk pertama harus memiliki key Produk Pertama dan produk kedua harus memiliki key Produk Kedua untuk key yang dideteksi untuk dimasukkan dalam tabel`;
 
         console.log(systemBehaviour)
 

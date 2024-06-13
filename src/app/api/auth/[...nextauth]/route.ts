@@ -10,7 +10,7 @@ const passwordAdmin = process.env.NEXT_SECRET_PASSWORD;
 const secretbyte = crypto.randomBytes(64).toString('hex');
 const user: any = {
   id: 1,
-  name: "fajri hidayat",
+  first_name: "fajri hidayat",
   email: "fajrihidayat@gmail.com",
   role: "admin",
 };
