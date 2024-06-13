@@ -41,11 +41,11 @@ const Compare = () => {
     let currentSection: 'advantages' | 'disadvantages' | null = null;
 
     lines.forEach(line => {
-      if (line.startsWith('Produk Pertama:' || 'Produk 1:' || "Produk Pertama (Pupuk Alami):")) {
+      if (line.startsWith('Produk Pertama' || 'Produk 1' || "Produk Pertama (Pupuk Alami):")) {
         product1.name = line.replace('Produk 1:', '').trim();
         currentProduct = product1;
         currentSection = null;
-      } else if (line.startsWith('Produk Kedua:' || 'Produk 2:')) {
+      } else if (line.startsWith('Produk Kedua' || 'Produk 2')) {
         product2.name = line.replace('Produk 2:', '').trim();
         currentProduct = product2;
         currentSection = null;
