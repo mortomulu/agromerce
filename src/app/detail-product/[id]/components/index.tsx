@@ -60,7 +60,7 @@ export default function DetalProductModule(product: any) {
 
   return (
     <Layout>
-      <section className="lg:py-24 bg-white md:py-16 dark:bg-gray-900 antialiased">
+      <section className="lg:py-24 md:py-16 min-h-screen bg-white  dark:bg-gray-900 antialiased">
         <div className="max-w-screen-xl px-4 mx-auto 2xl:px-0">
           <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
             <div className="shrink-0 max-w-md lg:max-w-lg mx-auto">
