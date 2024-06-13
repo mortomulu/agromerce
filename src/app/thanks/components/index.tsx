@@ -1,5 +1,6 @@
-"use client"
-import { useRouter } from "next/router";
+"use client";
+
+import { useRouter } from "next/navigation";
 
 const Thanks = () => {
   const router = useRouter();
