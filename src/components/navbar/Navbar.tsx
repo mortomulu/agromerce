@@ -208,13 +208,14 @@ const Navbar = () => {
     pathname == "/consultation" ||
     pathname == "/compare" ||
     pathname == "/cart" ||
-    pathname == "/favorite"
+    pathname == "/favorite" ||
+    pathname == "/thanks"
   ) {
     return (
       <div className="navbar bg-white mb-8 fixed top-0 z-50">
         <div className="navbar-start w-1/5">
-          <Link href={"/"} className="btn btn-ghost text-xl">
-            <span className="text-green-500 -mr-1">Agro</span>Merce
+          <Link href={"/"} className="btn btn-ghost gap-1 text-xl">
+            <span className="text-green-500 ">Agro</span>Merce
           </Link>
         </div>
         <div className="navbar-start hidden lg:flex">
