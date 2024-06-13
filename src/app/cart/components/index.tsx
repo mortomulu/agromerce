@@ -12,8 +12,9 @@ import { FaTrashAlt } from "react-icons/fa";
 const Cart = () => {
   const cartRedux = useSelector((state: RootState) => state.cart.products);
   const [isClient, setIsClient] = useState(false);
-  const [cartDB, setCartDB] = useState([]);
   const [checkedItems, setCheckedItems] = useState<number[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false); // To track if Midtrans is initialized
+  const [transactionInProgress, setTransactionInProgress] = useState(false); // To track if a transaction is in progress
   const dispatch = useDispatch();
   const { data: session, status } = useSession();
 
@@ -21,24 +22,75 @@ const Cart = () => {
 
   useEffect(() => {
     setIsClient(true);
-    // setCartDB(cart.cart);
 
-    const script = document.createElement("script");
-    script.src = "https://app.sandbox.midtrans.com/snap/snap.js"; // rubah ketika mode production
-    script.setAttribute("data-client-key", "SB-Mid-client-HEgMVPL74xO84DTX");
-    script.async = true;
-    document.body.appendChild(script);
+    // Check if script is already present
+    if (
+      !document.querySelector(
+        `script[src="https://app.sandbox.midtrans.com/snap/snap.js"]`
+      )
+    ) {
+      const script = document.createElement("script");
+      script.src = "https://app.sandbox.midtrans.com/snap/snap.js"; // rubah ketika mode production
+      script.setAttribute("data-client-key", "SB-Mid-client-HEgMVPL74xO84DTX");
+      script.async = true;
+
+      script.onload = () => {
+        const storedTransaction = localStorage.getItem("midtransTransaction");
+        if (storedTransaction && !isInitialized) {
+          const transaction = JSON.parse(storedTransaction);
+          initializeMidtrans(transaction);
+        }
+      };
+
+      document.body.appendChild(script);
+    } else {
+      const storedTransaction = localStorage.getItem("midtransTransaction");
+      if (storedTransaction && !isInitialized) {
+        const transaction = JSON.parse(storedTransaction);
+        initializeMidtrans(transaction);
+      }
+    }
 
     return () => {
-      document.body.removeChild(script);
+      // Cleanup if necessary
     };
-  }, []);
+  }, [isInitialized]);
 
   useEffect(() => {
     if (isClient) {
       localStorage.setItem("cart", JSON.stringify(cartRedux));
     }
   }, [cartRedux, isClient]);
+
+  const initializeMidtrans = (transaction: any) => {
+    if (window.snap) {
+      setIsInitialized(true);
+      setTransactionInProgress(true);
+      window.snap.embed(transaction.token, {
+        embedId: "midtrans-payment-container",
+        onSuccess: function (result: any) {
+          console.log(result);
+          localStorage.removeItem("midtransTransaction"); // Clear token after successful payment
+          setTransactionInProgress(false);
+          router.push("/thanks");
+        },
+        onPending: function (result: any) {
+          console.log(result);
+        },
+        onError: function (result: any) {
+          console.log(result);
+        },
+        onClose: function () {
+          console.log(
+            "customer closed the popup without finishing the payment"
+          );
+          setTransactionInProgress(false);
+        },
+      });
+    } else {
+      console.error("Midtrans snap is not defined");
+    }
+  };
 
   const handleIncrement = (item: any) => {
     dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }));
@@ -96,27 +148,21 @@ const Cart = () => {
       const { transaction } = await response.json();
       console.log(transaction);
 
-      window.snap.embed(transaction.token, {
-        embedId: "midtrans-payment-container",
-        onSuccess: function (result: any) {
-          console.log(result);
-          router.push("/thanks");
-        },
-        onPending: function (result: any) {
-          console.log(result);
-        },
-        onError: function (result: any) {
-          console.log(result);
-        },
-        onClose: function () {
-          console.log(
-            "customer closed the popup without finishing the payment"
-          );
-        },
-      });
+      initializeMidtrans(transaction);
+      // Store the transaction in local storage
+      localStorage.setItem("midtransTransaction", JSON.stringify(transaction));
     } catch (error) {
       console.error("Error creating transaction:", error);
     }
+  };
+
+  const handleCancelTransaction = () => {
+    setTransactionInProgress(false);
+    localStorage.removeItem("midtransTransaction");
+    const element = document.getElementById(
+      "midtrans-payment-container"
+    ) as HTMLElement;
+    element.innerHTML = "";
   };
 
   if (!isClient) {
@@ -192,13 +238,26 @@ const Cart = () => {
                 </div>
               ))}
               {cartRedux.length > 0 && (
-                <div className="flex justify-end mt-8">
+                <div className="flex justify-end mt-8 gap-4">
                   <button
                     onClick={handleCheckout}
-                    className="py-3 px-5 font-bold bg-green-500 btn-primary text-white hover:bg-green-700 ml-4"
+                    className={
+                      transactionInProgress
+                        ? "py-3 px-5 font-bold bg-gray-500 btn-primary text-white  ml-4"
+                        : "py-3 px-5 font-bold bg-green-500 btn-primary text-white hover:bg-green-700 ml-4"
+                    }
+                    disabled={transactionInProgress}
                   >
                     Checkout
                   </button>
+                  {transactionInProgress && (
+                    <button
+                      onClick={handleCancelTransaction}
+                      className="py-3 px-5 font-bold bg-red-500 btn-primary text-white hover:bg-red-700"
+                    >
+                      Cancel Transaction
+                    </button>
+                  )}
                 </div>
               )}
             </div>
