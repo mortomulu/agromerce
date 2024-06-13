@@ -159,11 +159,18 @@ const Cart = () => {
   const handleCancelTransaction = () => {
     setTransactionInProgress(false);
     localStorage.removeItem("midtransTransaction");
-    const element = document.getElementById(
-      "midtrans-payment-container"
-    ) as HTMLElement;
-    element.innerHTML = "";
+    
+    const element = document.getElementById("midtrans-payment-container") as HTMLElement;
+    if (element) {
+      element.innerHTML = "";
+    }
+  
+    // Reload the page after a short delay to ensure innerHTML is updated
+    setTimeout(() => {
+      window.location.reload();
+    }, 100); // 100 milliseconds delay
   };
+  
 
   if (!isClient) {
     return <PreloadCart />;
