@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "flowbite-react";
 import { postProduct } from "@/lib/crudProduct/dbData";
-import { useRef } from "react";
 
 const FormAddProduct = () => {
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
@@ -15,16 +14,12 @@ const FormAddProduct = () => {
   const [img, setImg] = useState<File | null>(null);
   const refImg: any = useRef();
 
-  console.log(refImg);
-
   const changeTextColor = () => {
     setIsOptionSelected(true);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    console.log(name, price, category, desc, img);
 
     if (!name || !price || !category || !desc || !img) {
       console.error("Please fill in all fields");
@@ -41,12 +36,21 @@ const FormAddProduct = () => {
 
     const fileImage = img;
 
-    console.log(formData);
-
     try {
-      console.log(img);
       await postProduct(formData, fileImage);
       console.log("Product added successfully");
+
+      // Tweet the product details
+      await fetch('/api/tweet', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, price, category, desc }),
+      });
+
+      console.log("Tweet posted successfully");
+
       setName("");
       setStock("");
       setPrice("");
@@ -55,7 +59,7 @@ const FormAddProduct = () => {
       setImg(null);
       refImg.current.value = null;
     } catch (error) {
-      console.error("Error adding product:", error);
+      console.error("Error adding product or posting tweet:", error);
     }
   };
 
