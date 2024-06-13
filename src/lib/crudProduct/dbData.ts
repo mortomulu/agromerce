@@ -62,6 +62,7 @@ export const postProduct = async (productData: any, fileImage: File) => {
       },
       body: JSON.stringify({
         product_name: productData.product_name,
+        stok: productData.stok,
         price: productData.price,
         product_category: productData.product_category,
         url_image: `https://xtsemdavncboeicgvrsz.supabase.co/storage/v1/object/public/image/${filepath}`,

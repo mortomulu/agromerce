@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
 
     const { data, error } = await supabase.from("products").insert({
       product_name: requestBody.product_name,
+      stok: requestBody.stok,
       price: requestBody.price,
       product_category: requestBody.product_category,
       url_image: requestBody.url_image,
