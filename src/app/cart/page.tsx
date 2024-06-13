@@ -1,22 +1,24 @@
+import { cache } from "react";
 import Cart from "./components";
 
 const url = process.env.NEXT_PUBLIC_BASE_URL;
 
-export default function CartPage({ cart } : any) {
-  return <Cart cart={cart} />;
-}
-
-export async function getServerSideProps() {
+export default async function CartPage() {
   try {
-    const res = await fetch(`${url}api/cart`); 
-    const cart = await res.json();
-    return {
-      props: { cart },
-    };
+    const response = await fetch(`${url}api/cart`, {
+      next: { revalidate: 10 },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch cart data");
+    }
+
+    const data = await response.json();
+
+    return <Cart />;
   } catch (error) {
-    console.error("Failed to fetch cart data:", error);
-    return {
-      props: { cart: [] },
-    };
+    console.error("Error fetching cart data:", error);
+    return <div>Error loading cart data</div>;
   }
 }
+

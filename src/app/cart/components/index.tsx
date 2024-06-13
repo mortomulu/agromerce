@@ -9,7 +9,7 @@ import router from "next/router";
 import { useSession } from "next-auth/react";
 import { FaTrashAlt } from "react-icons/fa";
 
-const Cart = ({ cart }: any) => {
+const Cart = () => {
   const cartRedux = useSelector((state: RootState) => state.cart.products);
   const [isClient, setIsClient] = useState(false);
   const [cartDB, setCartDB] = useState([]);
@@ -21,7 +21,7 @@ const Cart = ({ cart }: any) => {
 
   useEffect(() => {
     setIsClient(true);
-    setCartDB(cart.cart);
+    // setCartDB(cart.cart);
 
     const script = document.createElement("script");
     script.src = "https://app.sandbox.midtrans.com/snap/snap.js"; // rubah ketika mode production
