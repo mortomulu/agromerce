@@ -5,7 +5,9 @@ const url = process.env.NEXT_PUBLIC_BASE_URL;
 
 export default async function CartPage() {
   try {
-    const response = await fetch(`${url}api/cart`, { cache: 'no-store' });
+    const response = await fetch(`${url}api/cart`, {
+      next: { revalidate: 10 },
+    });
 
     if (!response.ok) {
       throw new Error("Failed to fetch cart data");
