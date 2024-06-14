@@ -1,52 +1,24 @@
-import { NextRequest, NextResponse } from "next/server";
-import { TwitterApi } from 'twitter-api-v2';
+// pages/api/tweet.js
+import axios from 'axios';
 
-const client = new TwitterApi({
-  appKey: process.env.NEXT_PUBLIC_TWITTER_APP_KEY,
-  appSecret: process.env.NEXT_SECRET_TWITTER_APP_SECRET,
-  accessToken: process.env.NEXT_PUBLIC_TWITTER_ACCESS_TOKEN,
-  accessSecret: process.env.NEXT_SECRET_TWITTER_ACCESS_SECRET,
-});
-
-export async function POST(req) {
-  const headers = {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-  };
+export default async function handler(req, res) {
+  const { access_token, name, price, category, desc } = req.body;
 
   try {
-    const requestBody = await req.json();
-    const { name, price, category, desc } = requestBody;
-
-    const tweetText = `New Product Added: ${name}\nCategory: ${category}\nPrice: $${price}\nDescription: ${desc}`;
-
-    if (req.method === "OPTIONS") {
-      return new Response(null, {
+    const response = await axios.post(
+      'https://api.x.com/2/tweets',
+      { text: `Product: ${name}, Price: ${price}, Category: ${category}, Description: ${desc}` },
+      {
         headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, HEAD, POST, PUT, DELETE",
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
         },
-      });
-    }
+      }
+    );
 
-    await client.v1.tweet(tweetText);
-    console.log("Tweet posted successfully");
-
-    return NextResponse.json({
-      status: 201,
-      statusText: "Created",
-      headers: { ...headers },
-      message: "Tweet posted successfully",
-    });
+    res.status(200).json(response.data);
   } catch (error) {
-    console.error("Error posting tweet:", error);
-    return NextResponse.json({
-      status: 500,
-      statusText: "Internal Server Error",
-      headers: { ...headers },
-      message: "Error posting tweet",
-    });
+    console.error('Error posting tweet:', error.response.data);
+    res.status(500).json({ error: 'Failed to post tweet' });
   }
 }
