@@ -41,15 +41,15 @@ const FormAddProduct = () => {
       console.log("Product added successfully");
 
       // Tweet the product details
-      await fetch('/api/tweet', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, price, category, desc }),
-      });
+      // await fetch('/api/tweet', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ name, price, category, desc }),
+      // });
 
-      console.log("Tweet posted successfully");
+      // console.log("Tweet posted successfully");
 
       setName("");
       setStock("");
