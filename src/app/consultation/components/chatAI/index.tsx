@@ -3,6 +3,7 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 import { IoSend } from "react-icons/io5";
+import { ClipLoader } from "react-spinners"; // Import a spinner component
 
 const agroProducts = [
   {
@@ -62,6 +63,7 @@ const ChatAI = () => {
   const [respond, setRespond] = useState("");
   const [prompt, setPrompt] = useState("");
   const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const API_KEY = process.env.NEXT_SECRET_OPENAI_API_KEY; // Replace with your actual API key
 
   useEffect(() => {
@@ -69,6 +71,7 @@ const ChatAI = () => {
   }, []);
 
   async function getData() {
+    setIsLoading(true);
     try {
       const { data, error }: any = await supabase.from("products").select();
       if (error) throw error;
@@ -76,11 +79,15 @@ const ChatAI = () => {
       console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setIsLoading(true); // Start loading
+
     const promptAwal =
       "kamu adalah seorang customer service untuk sebuah e-commerce agro yang akan menjawab masalah masalah dan memberikan informasi dalam bidang agro, dan jika ada pertanyaan diluar bidang agro, ingatkan customer bahwa anda adalah cs agro";
 
@@ -125,22 +132,43 @@ const ChatAI = () => {
 
       const data = await response.json();
       console.log(data);
+      setPrompt("");
 
       // Format response content with line breaks
       const formattedResponse = data.choices[0].message.content
         .replace(/\n/g, "<br />")
         .replace(/(\d+\.\s)/g, "<strong>$1</strong>");
 
-      setRespond(formattedResponse);
+      displayResponse(formattedResponse);
     } catch (error) {
       console.error("Error:", error);
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
+  const displayResponse = (text: any) => {
+    setRespond("");
+    let index = 0;
+    const intervalId = setInterval(() => {
+      if (index < text.length - 1) {
+        setRespond((prev) => prev + text[index]);
+        index++;
+      } else {
+        clearInterval(intervalId);
+      }
+    }, 20);
+  };
+
   return (
-    <div className="pt-28 p-10 h-screen">
-      <form onSubmit={handleSubmit}>
-        <div className="h-96 overflow-y-auto p-4 bg-gray-100 rounded">
+    <div className="flex flex-col pt-28 p-10 h-screen">
+      <form onSubmit={handleSubmit} className="flex flex-col flex-grow">
+        <div className="flex-grow overflow-y-auto p-4 bg-gray-100 rounded relative">
+          {isLoading && (
+            <div className="absolute inset-0 flex justify-center items-center bg-gray-100 bg-opacity-75">
+              <ClipLoader size={50} color={"#3cb371"} loading={isLoading} />
+            </div>
+          )}
           <div dangerouslySetInnerHTML={{ __html: respond }} />
         </div>
         <div className="flex items-center gap-5 mt-4">
@@ -150,8 +178,9 @@ const ChatAI = () => {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Type your message here..."
+            disabled={isLoading} // Disable input when loading
           />
-          <button type="submit">
+          <button type="submit" disabled={isLoading}>
             <IoSend className="w-7 h-7 text-center text-blue-500" />
           </button>
         </div>
