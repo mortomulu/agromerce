@@ -1,24 +1,27 @@
 "use client";
 
-import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
+import { Button, Label, Modal } from "flowbite-react";
 import { useEffect, useState, useRef } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { deleteProduct, editProduct } from "@/lib/crudProduct/dbData";
+import Link from "next/link";
 
 const Action = ({ product }: any, { id }: { id: number }) => {
-  const [openModalDelete, setOpenModalDelete] = useState(Boolean);
-  const [openModalEdit, setOpenModalEdit] = useState(Boolean);
-  const [openModalDetail, setOpenModaldetail] = useState();
-  const [name, setName]: any = useState();
-  const [stok, setStok]: any = useState();
-  const [price, setPrice]: any = useState();
-  const [category, setCategory]: any = useState();
-  const [desc, setDesc]: any = useState();
-  const [urlImage, seturlImage]: any = useState();
-  const [image, setImage]: any = useState();
-  const [productId, setProductId]: any = useState();
-  const refImg: any = useRef();
+  const [openModalDelete, setOpenModalDelete] = useState(false);
+  const [openModalEdit, setOpenModalEdit] = useState(false);
+  const [openModalDetail, setOpenModalDetail] = useState(false);
+  const [name, setName] = useState("");
+  const [stok, setStok] = useState(0);
+  const [price, setPrice] = useState(0);
+  const [category, setCategory] = useState("");
+  const [desc, setDesc] = useState("");
+  const [urlImage, seturlImage] = useState("");
+  const [image, setImage]: any = useState(null);
+  const [productId, setProductId] = useState(0);
+  const refImg: any = useRef(null);
+
   const productData = {
+    id: productId,
     product_name: name,
     stok: stok,
     price: price,
@@ -28,8 +31,8 @@ const Action = ({ product }: any, { id }: { id: number }) => {
   };
 
   useEffect(() => {
-    const getData: any = async () => {
-      const data: any = await product;
+    const getData = async () => {
+      const data = await product;
       setName(data.product_name);
       setStok(data.stok);
       setPrice(data.price);
@@ -39,7 +42,7 @@ const Action = ({ product }: any, { id }: { id: number }) => {
       setProductId(data.id);
     };
     getData();
-  }, []);
+  }, [product]);
 
   const handleDeleteModal = async () => {
     await deleteProduct(productId);
@@ -50,22 +53,23 @@ const Action = ({ product }: any, { id }: { id: number }) => {
     e.preventDefault();
     await editProduct(productData, image, productId);
     setName("");
-    setStok("");
-    setPrice();
+    setStok(0);
+    setPrice(0);
     setCategory("");
     setDesc("");
     seturlImage("");
-    setImage();
-    refImg.current.value = null;
+    setImage(null);
+    if (refImg.current) refImg.current.value = null;
     setOpenModalEdit(false);
   };
 
-  async function onCloseModalEdit() {
+  const onCloseModalEdit = () => {
     setOpenModalEdit(false);
-  }
+  };
 
   return (
     <>
+      {/* Modal Delete */}
       <Modal
         show={openModalDelete}
         size="md"
@@ -90,13 +94,12 @@ const Action = ({ product }: any, { id }: { id: number }) => {
           </div>
         </Modal.Body>
       </Modal>
+
+      {/* Modal Edit */}
       <Modal show={openModalEdit} onClose={onCloseModalEdit} size="3xl" popup>
         <Modal.Header />
         <Modal.Body>
-          <form
-            onSubmit={(e: any) => handleSubmitEdit(e)}
-            className="space-y-6 px-5"
-          >
+          <form onSubmit={handleSubmitEdit} className="space-y-6 px-5">
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">
               Edit your Product Data
             </h3>
@@ -108,7 +111,7 @@ const Action = ({ product }: any, { id }: { id: number }) => {
                 id="productName"
                 placeholder="your product name..."
                 value={name}
-                onChange={(event: any) => setName(event.target.value)}
+                onChange={(event) => setName(event.target.value)}
                 required
                 className="w-full px-3 py-2 border rounded-md bg-inherit focus:border-black"
               />
@@ -148,14 +151,13 @@ const Action = ({ product }: any, { id }: { id: number }) => {
               <select
                 id="category"
                 value={category}
-                onChange={(event: any) => setCategory(event.target.value)}
+                onChange={(event) => setCategory(event.target.value)}
                 required
                 className="w-full px-3 py-2 border rounded-md"
               >
                 <option value="">Select a category</option>
                 <option value="pra">Pra</option>
                 <option value="pasca">Pasca</option>
-                {/* Tambahkan opsi kategori lain sesuai kebutuhan */}
               </select>
             </div>
             <div>
@@ -166,7 +168,7 @@ const Action = ({ product }: any, { id }: { id: number }) => {
                 id="desc"
                 placeholder="Product description..."
                 value={desc}
-                onChange={(event: any) => setDesc(event.target.value)}
+                onChange={(event) => setDesc(event.target.value)}
                 required
                 className="w-full px-3 py-2 h-72 border rounded-md"
               />
@@ -176,18 +178,17 @@ const Action = ({ product }: any, { id }: { id: number }) => {
                 <Label htmlFor="image" value="Update Image" />
               </div>
               <div className="flex items-center gap-10">
-              <div>
-                <img src={urlImage} alt="" className="h-20 w-20" />
+                <div>
+                  <img src={urlImage} alt="" className="h-20 w-20" />
+                </div>
+                <input
+                  ref={refImg}
+                  id="image"
+                  type="file"
+                  onChange={(event: any) => setImage(event.target.files[0])}
+                  className="w-full px-3 py-2 "
+                />
               </div>
-              <input
-                ref={refImg}
-                id="image"
-                type="file"
-                onChange={(event: any) => setImage(event.target.files[0])}
-                className="w-full px-3 py-2 "
-              />
-              </div>
-              
             </div>
             <div className="w-full">
               <Button type="submit">Submit</Button>
@@ -195,29 +196,52 @@ const Action = ({ product }: any, { id }: { id: number }) => {
           </form>
         </Modal.Body>
       </Modal>
+
+      {/* Modal Detail */}
+      <Modal
+        show={openModalDetail}
+        onClose={() => setOpenModalDetail(false)}
+        size="3xl"
+        popup
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="space-y-6 px-5">
+            <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+              Product Details
+            </h3>
+            <div>
+              <strong>Product Name:</strong>
+              <p>{name}</p>
+            </div>
+            <div>
+              <strong>Stok:</strong>
+              <p>{stok}</p>
+            </div>
+            <div>
+              <strong>Price:</strong>
+              <p>{price}</p>
+            </div>
+            <div>
+              <strong>Category:</strong>
+              <p>{category}</p>
+            </div>
+            <div>
+              <strong>Description:</strong>
+              <p>{desc}</p>
+            </div>
+            <div>
+              <strong>Image:</strong>
+              <img src={urlImage} alt={name} className="h-20 w-20" />
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+
       <div className="flex items-center ml-20 space-x-3.5">
-        <button className="hover:text-primary">
-          <svg
-            className="fill-current"
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M8.99981 14.8219C3.43106 14.8219 0.674805 9.50624 0.562305 9.28124C0.47793 9.11249 0.47793 8.88749 0.562305 8.71874C0.674805 8.49374 3.43106 3.20624 8.99981 3.20624C14.5686 3.20624 17.3248 8.49374 17.4373 8.71874C17.5217 8.88749 17.5217 9.11249 17.4373 9.28124C17.3248 9.50624 14.5686 14.8219 8.99981 14.8219ZM1.85605 8.99999C2.4748 10.0406 4.89356 13.5562 8.99981 13.5562C13.1061 13.5562 15.5248 10.0406 16.1436 8.99999C15.5248 7.95936 13.1061 4.44374 8.99981 4.44374C4.89356 4.44374 2.4748 7.95936 1.85605 8.99999Z"
-              fill=""
-            />
-            <path
-              d="M9 11.3906C7.67812 11.3906 6.60938 10.3219 6.60938 9C6.60938 7.67813 7.67812 6.60938 9 6.60938C10.3219 6.60938 11.3906 7.67813 11.3906 9C11.3906 10.3219 10.3219 11.3906 9 11.3906ZM9 7.875C8.38125 7.875 7.875 8.38125 7.875 9C7.875 9.61875 8.38125 10.125 9 10.125C9.61875 10.125 10.125 9.61875 10.125 9C10.125 8.38125 9.61875 7.875 9 7.875Z"
-              fill=""
-            />
-          </svg>
-        </button>
         <button
-          onClick={() => setOpenModalDelete(true)}
-          className="hover:text-red-500"
+          className="hover:text-primary"
+          onClick={() => setOpenModalDetail(true)}
         >
           <svg
             className="fill-current"
@@ -228,19 +252,7 @@ const Action = ({ product }: any, { id }: { id: number }) => {
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              d="M13.7535 2.47502H11.5879V1.9969C11.5879 1.15315 10.9129 0.478149 10.0691 0.478149H7.90352C7.05977 0.478149 6.38477 1.15315 6.38477 1.9969V2.47502H4.21914C3.40352 2.47502 2.72852 3.15002 2.72852 3.96565V4.8094C2.72852 5.42815 3.09414 5.9344 3.62852 6.1594L4.07852 15.4688C4.13477 16.6219 5.09102 17.5219 6.24414 17.5219H11.7004C12.8535 17.5219 13.8098 16.6219 13.866 15.4688L14.3441 6.13127C14.8785 5.90627 15.2441 5.3719 15.2441 4.78127V3.93752C15.2441 3.15002 14.5691 2.47502 13.7535 2.47502ZM7.67852 1.9969C7.67852 1.85627 7.79102 1.74377 7.93164 1.74377H10.0973C10.2379 1.74377 10.3504 1.85627 10.3504 1.9969V2.47502H7.70664V1.9969H7.67852ZM4.02227 3.96565C4.02227 3.85315 4.10664 3.74065 4.24727 3.74065H13.7535C13.866 3.74065 13.9785 3.82502 13.9785 3.96565V4.8094C13.9785 4.9219 13.8941 5.0344 13.7535 5.0344H4.24727C4.13477 5.0344 4.02227 4.95002 4.02227 4.8094V3.96565ZM11.7285 16.2563H6.27227C5.79414 16.2563 5.40039 15.8906 5.37227 15.3844L4.95039 6.2719H13.0785L12.6566 15.3844C12.6004 15.8625 12.2066 16.2563 11.7285 16.2563Z"
-              fill=""
-            />
-            <path
-              d="M9.00039 9.11255C8.66289 9.11255 8.35352 9.3938 8.35352 9.75942V13.3313C8.35352 13.6688 8.63477 13.9782 9.00039 13.9782C9.33789 13.9782 9.64727 13.6969 9.64727 13.3313V9.75942C9.64727 9.3938 9.33789 9.11255 9.00039 9.11255Z"
-              fill=""
-            />
-            <path
-              d="M11.2502 9.67504C10.8846 9.64692 10.6033 9.90004 10.5752 10.2657L10.4064 12.7407C10.3783 13.0782 10.6314 13.3875 10.9971 13.4157C11.0252 13.4157 11.0252 13.4157 11.0533 13.4157C11.3908 13.4157 11.6721 13.1625 11.6721 12.825L11.8408 10.35C11.8408 9.98442 11.5877 9.70317 11.2502 9.67504Z"
-              fill=""
-            />
-            <path
-              d="M6.72245 9.67504C6.38495 9.70317 6.1037 10.0125 6.13182 10.35L6.3287 12.825C6.35683 13.1625 6.63808 13.4157 6.94745 13.4157C6.97558 13.4157 6.97558 13.4157 7.0037 13.4157C7.3412 13.3875 7.62245 13.0782 7.59433 12.7407L7.39745 10.2657C7.39745 9.90004 7.08808 9.64692 6.72245 9.67504Z"
+              d="M8.99981 14.8219C3.43106 14.8219 0.674805 9.50624 0.562305 9.28124C0.47793 9.11249 0.47793 8.88749 0.562305 8.71874C0.674805 8.49374 3.43106 3.17874 8.99981 3.17874C14.5686 3.17874 17.3248 8.49374 17.4373 8.71874C17.5217 8.88749 17.5217 9.11249 17.4373 9.28124C17.3248 9.50624 14.5686 14.8219 8.99981 14.8219ZM2.0623 9C2.79355 10.1966 5.4073 13.4287 9 13.4287C12.5926 13.4287 15.2061 10.1966 15.9373 9C15.2061 7.80336 12.5926 4.57124 9 4.57124C5.4073 4.57124 2.79355 7.80336 2.0623 9ZM9 11.625C7.65481 11.625 6.5623 10.5325 6.5623 9.18749C6.5623 7.84124 7.65481 6.74999 9 6.74999C10.3451 6.74999 11.4373 7.84124 11.4373 9.18749C11.4373 10.5325 10.3451 11.625 9 11.625ZM9 8.24999C8.48106 8.24999 8.0623 8.66874 8.0623 9.18749C8.0623 9.70624 8.48106 10.125 9 10.125C9.51855 10.125 9.9373 9.70624 9.9373 9.18749C9.9373 8.66874 9.51855 8.24999 9 8.24999Z"
               fill=""
             />
           </svg>
@@ -269,6 +281,36 @@ const Action = ({ product }: any, { id }: { id: number }) => {
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+        <button
+          className="hover:text-primary"
+          onClick={() => setOpenModalDelete(true)}
+        >
+          <svg
+            className="fill-current"
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M13.7535 2.47502H11.5879V1.9969C11.5879 1.15315 10.9129 0.478149 10.0691 0.478149H7.90352C7.05977 0.478149 6.38477 1.15315 6.38477 1.9969V2.47502H4.21914C3.40352 2.47502 2.72852 3.15002 2.72852 3.96565V4.8094C2.72852 5.42815 3.09414 5.9344 3.62852 6.1594L4.07852 15.4688C4.13477 16.6219 5.09102 17.5219 6.24414 17.5219H11.7004C12.8535 17.5219 13.8098 16.6219 13.866 15.4688L14.3441 6.13127C14.8785 5.90627 15.2441 5.3719 15.2441 4.78127V3.93752C15.2441 3.15002 14.5691 2.47502 13.7535 2.47502ZM7.67852 1.9969C7.67852 1.85627 7.79102 1.74377 7.93164 1.74377H10.0973C10.2379 1.74377 10.3504 1.85627 10.3504 1.9969V2.47502H7.70664V1.9969H7.67852ZM4.02227 3.96565C4.02227 3.85315 4.10664 3.74065 4.24727 3.74065H13.7535C13.866 3.74065 13.9785 3.82502 13.9785 3.96565V4.8094C13.9785 4.9219 13.8941 5.0344 13.7535 5.0344H4.24727C4.13477 5.0344 4.02227 4.95002 4.02227 4.8094V3.96565ZM11.7285 16.2563H6.27227C5.79414 16.2563 5.40039 15.8906 5.37227 15.3844L4.95039 6.2719H13.0785L12.6566 15.3844C12.6004 15.8625 12.2066 16.2563 11.7285 16.2563Z"
+              fill=""
+            />
+            <path
+              d="M9.00039 9.11255C8.66289 9.11255 8.35352 9.3938 8.35352 9.75942V13.3313C8.35352 13.6688 8.63477 13.9782 9.00039 13.9782C9.33789 13.9782 9.64727 13.6969 9.64727 13.3313V9.75942C9.64727 9.3938 9.33789 9.11255 9.00039 9.11255Z"
+              fill=""
+            />
+            <path
+              d="M11.2502 9.67504C10.8846 9.64692 10.6033 9.90004 10.5752 10.2657L10.4064 12.7407C10.3783 13.0782 10.6314 13.3875 10.9971 13.4157C11.0252 13.4157 11.0252 13.4157 11.0533 13.4157C11.3908 13.4157 11.6721 13.1625 11.6721 12.825L11.8408 10.35C11.8408 9.98442 11.5877 9.70317 11.2502 9.67504Z"
+              fill=""
+            />
+            <path
+              d="M6.72245 9.67504C6.38495 9.70317 6.1037 10.0125 6.13182 10.35L6.3287 12.825C6.35683 13.1625 6.63808 13.4157 6.94745 13.4157C6.97558 13.4157 6.97558 13.4157 7.0037 13.4157C7.3412 13.3875 7.62245 13.0782 7.59433 12.7407L7.39745 10.2657C7.39745 9.90004 7.08808 9.64692 6.72245 9.67504Z"
+              fill=""
             />
           </svg>
         </button>
