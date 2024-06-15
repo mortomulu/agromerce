@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { Button } from "flowbite-react";
 import { postProduct } from "@/lib/crudProduct/dbData";
+import { revalidatePath } from "next/cache";
 
 const FormAddProduct = () => {
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
@@ -39,6 +40,12 @@ const FormAddProduct = () => {
     try {
       await postProduct(formData, fileImage);
       console.log("Product added successfully");
+
+      
+
+      await fetch('/api/revalidate', {
+        method: 'POST',
+      });
 
       // Tweet the product details
       // await fetch('/api/tweet', {

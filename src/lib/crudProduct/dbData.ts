@@ -7,7 +7,7 @@ export async function getProducts() {
 
   try {
     const response = await fetch(`${url}/api/products`, {
-      next: { revalidate: 10 },
+      next: { revalidate: 1 },
     });
     if (!response.ok) {
       throw new Error("Failed to fetch data");
