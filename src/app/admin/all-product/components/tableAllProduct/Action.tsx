@@ -14,7 +14,7 @@ const Action = ({ product }: any, { id }: { id: number }) => {
   const [price, setPrice]: any = useState();
   const [category, setCategory]: any = useState();
   const [desc, setDesc]: any = useState();
-  const [urlImage, seturlImage] : any = useState()
+  const [urlImage, seturlImage]: any = useState();
   const [image, setImage]: any = useState();
   const [productId, setProductId]: any = useState();
   const refImg: any = useRef();
@@ -24,7 +24,7 @@ const Action = ({ product }: any, { id }: { id: number }) => {
     price: price,
     product_category: category,
     desc: desc,
-    url_image: urlImage
+    url_image: urlImage,
   };
 
   useEffect(() => {
@@ -46,15 +46,15 @@ const Action = ({ product }: any, { id }: { id: number }) => {
     setOpenModalDelete(false);
   };
 
-  const handleSubmitEdit = async (e : any) => {
-    e.preventDefault()
+  const handleSubmitEdit = async (e: any) => {
+    e.preventDefault();
     await editProduct(productData, image, productId);
     setName("");
     setStok("");
     setPrice();
     setCategory("");
     setDesc("");
-    seturlImage("")
+    seturlImage("");
     setImage();
     refImg.current.value = null;
     setOpenModalEdit(false);
@@ -93,7 +93,10 @@ const Action = ({ product }: any, { id }: { id: number }) => {
       <Modal show={openModalEdit} onClose={onCloseModalEdit} size="3xl" popup>
         <Modal.Header />
         <Modal.Body>
-          <form onSubmit={(e : any) => handleSubmitEdit(e)} className="space-y-6 px-5">
+          <form
+            onSubmit={(e: any) => handleSubmitEdit(e)}
+            className="space-y-6 px-5"
+          >
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">
               Edit your Product Data
             </h3>
@@ -165,20 +168,26 @@ const Action = ({ product }: any, { id }: { id: number }) => {
                 value={desc}
                 onChange={(event: any) => setDesc(event.target.value)}
                 required
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full px-3 py-2 h-72 border rounded-md"
               />
             </div>
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="image" value="Image" />
+                <Label htmlFor="image" value="Update Image" />
+              </div>
+              <div className="flex items-center gap-10">
+              <div>
+                <img src={urlImage} alt="" className="h-20 w-20" />
               </div>
               <input
                 ref={refImg}
                 id="image"
                 type="file"
                 onChange={(event: any) => setImage(event.target.files[0])}
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full px-3 py-2 "
               />
+              </div>
+              
             </div>
             <div className="w-full">
               <Button type="submit">Submit</Button>
