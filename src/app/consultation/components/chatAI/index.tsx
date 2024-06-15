@@ -151,25 +151,26 @@ const ChatAI = () => {
   };
 
   return (
-    <div className="pt-28 p-10 h-screen">
-      <form onSubmit={handleSubmit}>
-        <div className="h-96 overflow-y-auto p-4 bg-gray-100 rounded">
-          <div dangerouslySetInnerHTML={{ __html: respond }} />
-        </div>
-        <div className="flex items-center gap-5 mt-4">
-          <input
-            className="bg-white rounded-full w-full px-4 py-2 border-gray-300 border"
-            id="prompt"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Type your message here..."
-          />
-          <button type="submit">
-            <IoSend className="w-7 h-7 text-center text-blue-500" />
-          </button>
-        </div>
-      </form>
+    <div className="flex flex-col pt-28 p-10 h-screen">
+  <form onSubmit={handleSubmit} className="flex flex-col flex-grow">
+    <div className="flex-grow overflow-y-auto p-4 bg-gray-100 rounded">
+      <div dangerouslySetInnerHTML={{ __html: respond }} />
     </div>
+    <div className="flex items-center gap-5 mt-4">
+      <input
+        className="bg-white rounded-full w-full px-4 py-2 border-gray-300 border"
+        id="prompt"
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        placeholder="Type your message here..."
+      />
+      <button type="submit">
+        <IoSend className="w-7 h-7 text-center text-blue-500" />
+      </button>
+    </div>
+  </form>
+</div>
+
   );
 };
 
