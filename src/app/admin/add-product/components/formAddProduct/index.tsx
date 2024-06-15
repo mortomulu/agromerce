@@ -42,30 +42,30 @@ const FormAddProduct = () => {
       console.log("Product added successfully");
 
       
-
-      await fetch('/api/revalidate', {
-        method: 'POST',
-      });
-
-      // Tweet the product details
-      // await fetch('/api/tweet', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ name, price, category, desc }),
-      // });
-
-      // console.log("Tweet posted successfully");
-
-      setName("");
-      setStock("");
-      setPrice("");
-      setCategory("");
-      setDesc("");
-      setImg(null);
-      refImg.current.value = null;
-    } catch (error) {
+      // await fetch('/api/revalidate', {
+        //   method: 'POST',
+        // });
+        
+        // Tweet the product details
+        // await fetch('/api/tweet', {
+          //   method: 'POST',
+          //   headers: {
+            //     'Content-Type': 'application/json',
+            //   },
+            //   body: JSON.stringify({ name, price, category, desc }),
+            // });
+            
+            // console.log("Tweet posted successfully");
+            
+            setName("");
+            setStock("");
+            setPrice("");
+            setCategory("");
+            setDesc("");
+            setImg(null);
+            refImg.current.value = null;
+            revalidatePath('/admin/all-product')
+          } catch (error) {
       console.error("Error adding product or posting tweet:", error);
     }
   };
