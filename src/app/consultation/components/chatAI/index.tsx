@@ -147,21 +147,14 @@ const ChatAI = () => {
       } else {
         clearInterval(intervalId);
       }
-    }, 50); // Adjust the interval duration (in milliseconds) as needed
+    }, 20);
   };
 
   return (
     <div className="pt-28 p-10 h-screen">
       <form onSubmit={handleSubmit}>
         <div className="h-96 overflow-y-auto p-4 bg-gray-100 rounded">
-<<<<<<< HEAD:src/modules/consultation/chatAI/index.tsx
-          <div
-            className="text-emerald-500"
-            dangerouslySetInnerHTML={{ __html: respond || "&nbsp;" }} // Ensure not to render "undefined"
-          />
-=======
           <div dangerouslySetInnerHTML={{ __html: respond }} />
->>>>>>> f8f598a4b5976459611c515634851db9ee38ea0b:src/app/consultation/components/chatAI/index.tsx
         </div>
         <div className="flex items-center gap-5 mt-4">
           <input
