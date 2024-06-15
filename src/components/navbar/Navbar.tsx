@@ -33,33 +33,31 @@ const Navbar = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const exOutput = {
-    ProdukPertama: {
-      Nama: "Produk Pembasmi Wibu dan Kecoak",
-      Kelebihan: [
+    "Produk Pertama": {
+      "Kelebihan": [
         "Efektif dalam membasmi wibu dan kecoak yang sering menjadi hama dalam rumah.",
         "Bisa digunakan dalam berbagai lingkungan, terutama di rumah dan gedung.",
-        "Membantu mencegah penyakit yang bisa ditularkan oleh kecoak.",
+        "Membantu mencegah penyakit yang bisa ditularkan oleh kecoak."
       ],
-      Kekurangan: [
+      "Kekurangan": [
         "Menggunakan bahan kimia yang mungkin berbahaya jika terpapar pada manusia atau hewan peliharaan.",
         "Memerlukan waktu untuk melihat efeknya.",
-        "Bisa mencemari lingkungan jika tidak digunakan dengan tepat.",
-      ],
+        "Bisa mencemari lingkungan jika tidak digunakan dengan tepat."
+      ]
     },
-    ProdukKedua: {
-      Nama: "Pupuk Alami",
-      Kelebihan: [
+    "Produk Kedua": {
+      "Kelebihan": [
         "Memperbaiki kesuburan tanah dengan menambah bahan organik dan nutrisi esensial yang dibutuhkan oleh tanaman.",
         "Ramah lingkungan dan tidak mencemari lahan pertanian.",
-        "Bisa dihasilkan sendiri dengan mengolah sisa-sisa tanaman dan pupuk kandang.",
+        "Bisa dihasilkan sendiri dengan mengolah sisa-sisa tanaman dan pupuk kandang."
       ],
-      Kekurangan: [
+      "Kekurangan": [
         "Proses pembuatan membutuhkan waktu yang cukup lama.",
         "Konsistensi dan kualitas pupuk dapat bervariasi tergantung pada bahan yang digunakan.",
-        "Mungkin tidak mengandung semua nutrisi yang dibutuhkan oleh tanaman.",
-      ],
-    },
-  };
+        "Mungkin tidak mengandung semua nutrisi yang dibutuhkan oleh tanaman."
+      ]
+    }
+  }
 
   useEffect(() => {
     setIsClient(true);
@@ -79,8 +77,8 @@ const Navbar = () => {
     const handleCompare = async (e: any) => {
       e.preventDefault();
       setIsLoading(true);
-      const systemBehaviour = `Kamu akan melakukan komparasi produk dengan membandingan kedua produk berdasarkan data yang dikirim dengan output json kelebihan dan kekurangan masing masing produk dengan contoh teks output seperti ini ${exOutput} dan pada produk pertama harus memiliki key Produk Pertama dan produk kedua harus memiliki key Produk Kedua untuk key yang dideteksi untuk dimasukkan dalam tabel`;
-
+      const systemBehaviour =
+      `Kamu akan melakukan komparasi produk dengan membandingan kedua produk berdasarkan data yang dikirim dengan output json kelebihan dan kekurangan masing masing produk dengan contoh teks output seperti ini ${exOutput} dan pada produk pertama harus memiliki key Produk Pertama dan produk kedua harus memiliki key Produk Kedua untuk key yang dideteksi untuk dimasukkan dalam tabel`;
       console.log(systemBehaviour);
 
       const APIBody = {
