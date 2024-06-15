@@ -1,20 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "flowbite-react";
 import { postProduct } from "@/lib/crudProduct/dbData";
-import { useRef } from "react";
+import { revalidatePath } from "next/cache";
 
 const FormAddProduct = () => {
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
+  const [stock, setStock] = useState<number | "">("")
   const [price, setPrice] = useState<number | "">("");
   const [category, setCategory] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [img, setImg] = useState<File | null>(null);
   const refImg: any = useRef();
-
-  console.log(refImg);
 
   const changeTextColor = () => {
     setIsOptionSelected(true);
@@ -23,8 +22,6 @@ const FormAddProduct = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(name, price, category, desc, img);
-
     if (!name || !price || !category || !desc || !img) {
       console.error("Please fill in all fields");
       return;
@@ -32,6 +29,7 @@ const FormAddProduct = () => {
 
     const formData = {
       product_name: name,
+      stok: stock,
       price: price,
       product_category: category,
       desc: desc,
@@ -39,20 +37,36 @@ const FormAddProduct = () => {
 
     const fileImage = img;
 
-    console.log(formData);
-
     try {
-      console.log(img);
       await postProduct(formData, fileImage);
       console.log("Product added successfully");
-      setName("");
-      setPrice("");
-      setCategory("");
-      setDesc("");
-      setImg(null);
-      refImg.current.value = null;
-    } catch (error) {
-      console.error("Error adding product:", error);
+
+      
+      // await fetch('/api/revalidate', {
+        //   method: 'POST',
+        // });
+        
+        // Tweet the product details
+        // await fetch('/api/tweet', {
+          //   method: 'POST',
+          //   headers: {
+            //     'Content-Type': 'application/json',
+            //   },
+            //   body: JSON.stringify({ name, price, category, desc }),
+            // });
+            
+            // console.log("Tweet posted successfully");
+            
+            setName("");
+            setStock("");
+            setPrice("");
+            setCategory("");
+            setDesc("");
+            setImg(null);
+            refImg.current.value = null;
+            revalidatePath('/admin/all-product')
+          } catch (error) {
+      console.error("Error adding product or posting tweet:", error);
     }
   };
 
@@ -76,7 +90,20 @@ const FormAddProduct = () => {
               <input
                 type="text"
                 value={name}
+                placeholder="Pupuk, Pestisida, dll"
                 onChange={(e) => setName(e.target.value)}
+                className="w-full border-gray-300 rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              />
+            </div>
+            <div>
+              <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                Stock Product
+              </label>
+              <input
+                type="number"
+                value={stock}
+                placeholder="123"
+                onChange={(e) => setStock(e.target.valueAsNumber)}
                 className="w-full border-gray-300 rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
             </div>
@@ -87,6 +114,7 @@ const FormAddProduct = () => {
               <input
                 type="number"
                 value={price}
+                placeholder="123"
                 onChange={(e) => setPrice(e.target.valueAsNumber)}
                 className="w-full border-gray-300 rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
@@ -126,11 +154,12 @@ const FormAddProduct = () => {
             </div>
             <div>
               <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                Default textarea
+                Description Product
               </label>
               <textarea
                 rows={6}
                 value={desc}
+                placeholder="Description your product..."
                 onChange={(e) => setDesc(e.target.value)}
                 className="w-full border-gray-300 rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               ></textarea>
