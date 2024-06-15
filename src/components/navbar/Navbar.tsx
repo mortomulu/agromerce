@@ -16,6 +16,8 @@ import { FaTrashCan } from "react-icons/fa6";
 import { removeFromCompare, resetCompare } from "@/redux/slices/compareSlice";
 import { setMessage } from "@/redux/slices/messagesSlice";
 import { useRouter } from "next/navigation";
+import { ClipLoader } from "react-spinners";
+import { Button, Spinner } from "flowbite-react";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -27,11 +29,11 @@ const Navbar = () => {
   const [isClient, setIsClient] = useState(false);
   const dispatch = useDispatch();
   const API_KEY = process.env.NEXT_SECRET_OPENAI_API_KEY;
-  const router = useRouter()
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const exOutput = {
-    "ProdukPertama": {
-      "Nama": "Produk Pembasmi Wibu dan Kecoak",
+    "Produk Pertama": {
       "Kelebihan": [
         "Efektif dalam membasmi wibu dan kecoak yang sering menjadi hama dalam rumah.",
         "Bisa digunakan dalam berbagai lingkungan, terutama di rumah dan gedung.",
@@ -43,8 +45,7 @@ const Navbar = () => {
         "Bisa mencemari lingkungan jika tidak digunakan dengan tepat."
       ]
     },
-    "ProdukKedua": {
-      "Nama": "Pupuk Alami",
+    "Produk Kedua": {
       "Kelebihan": [
         "Memperbaiki kesuburan tanah dengan menambah bahan organik dan nutrisi esensial yang dibutuhkan oleh tanaman.",
         "Ramah lingkungan dan tidak mencemari lahan pertanian.",
@@ -57,7 +58,6 @@ const Navbar = () => {
       ]
     }
   }
-  
 
   useEffect(() => {
     setIsClient(true);
@@ -76,10 +76,10 @@ const Navbar = () => {
 
     const handleCompare = async (e: any) => {
       e.preventDefault();
+      setIsLoading(true);
       const systemBehaviour =
-        `Kamu akan melakukan komparasi produk dengan membandingan kedua produk berdasarkan data yang dikirim dengan output json kelebihan dan kekurangan masing masing produk dengan contoh teks output seperti ini ${exOutput} dan pada produk pertama harus memiliki key Produk Pertama dan produk kedua harus memiliki key Produk Kedua untuk key yang dideteksi untuk dimasukkan dalam tabel`;
-
-        console.log(systemBehaviour)
+      `Kamu akan melakukan komparasi produk dengan membandingan kedua produk berdasarkan data yang dikirim dengan output json kelebihan dan kekurangan masing masing produk dengan contoh teks output seperti ini ${exOutput} dan pada produk pertama harus memiliki key Produk Pertama dan produk kedua harus memiliki key Produk Kedua untuk key yang dideteksi untuk dimasukkan dalam tabel`;
+      console.log(systemBehaviour);
 
       const APIBody = {
         model: "gpt-4",
@@ -125,9 +125,11 @@ const Navbar = () => {
         const data = await response.json();
         const messageContent = data.choices[0].message.content;
 
+        setIsLoading(false);
+
         dispatch(setMessage(messageContent));
         dispatch(resetCompare());
-        router.push("/compare"); 
+        router.push("/compare");
       } catch (error) {
         console.error("Error:", error);
       }
@@ -183,8 +185,16 @@ const Navbar = () => {
                 <button
                   onClick={(e) => handleCompare(e)}
                   className="mt-4 w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+                  disabled={isLoading}
                 >
-                  Ready to Compare!
+                  {isLoading ? (
+                    <>
+                      <Spinner aria-label="Spinner button example" size="sm" />
+                      <span className="pl-3">Loading...</span>
+                    </>
+                  ) : (
+                    "Ready to Compare!"
+                  )}
                 </button>
               ) : (
                 <button
@@ -212,77 +222,84 @@ const Navbar = () => {
     pathname == "/thanks"
   ) {
     return (
-      <div className="navbar bg-white mb-8 fixed top-0 z-50">
-        <div className="navbar-start w-1/5">
-          <Link href={"/"} className="btn btn-ghost gap-1 text-xl">
-            <span className="text-green-500 ">Agro</span>Merce
-          </Link>
-        </div>
-        <div className="navbar-start hidden lg:flex">
-          <div className="menu menu-horizontal gap-10 px-1">
-            <div
-              className={
-                pathname === "/"
-                  ? "border-b-2 border-green-500 text-black"
-                  : "text-black"
-              }
-            >
-              <Link href="/">Home</Link>
-            </div>
-            <div
-              className={
-                pathname === "/consultation"
-                  ? "border-b-2 border-green-500 text-black"
-                  : "text-black"
-              }
-            >
-              <Link href="/consultation">Consultation</Link>
-            </div>
-            <div
-              className={
-                pathname === "/compare"
-                  ? "border-b-2 border-green-500 text-black"
-                  : "text-black"
-              }
-            >
-              <Link href="/compare">Compare</Link>
-            </div>
-          </div>
-        </div>
-        {isClient && (
-          <div className="navbar-end flex gap-8">
-            <CompareModal />
-            <div className="relative">
-              {cart.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs">
-                  {cart.length}
-                </span>
-              )}
-              <Link href={"/cart"}>
-                <button>
-                  <FaShoppingCart className="w-7 h-7" />
-                </button>
-              </Link>
-            </div>
-            <Link href={"/favorite"}>
-              <button>
-                <FaHeart className="w-7 h-7" />
-              </button>
-            </Link>
-            {status === "unauthenticated" ? (
-              <div className="btn text-white" onClick={() => signIn()}>
-                {" "}
-                Sign In
-              </div>
-            ) : (
-              <Link href={"/admin"} className="btn text-white">
-                {" "}
-                Dashboard
-              </Link>
-            )}
+      <>
+        {isLoading && (
+          <div className="absolute inset-0 flex justify-center items-center bg-gray-100 bg-opacity-75">
+            <ClipLoader size={50} color={"#3cb371"} loading={isLoading} />
           </div>
         )}
-      </div>
+        <div className="navbar bg-white mb-8 fixed top-0 z-50">
+          <div className="navbar-start w-1/5">
+            <Link href={"/"} className="btn btn-ghost gap-1 text-xl">
+              <span className="text-green-500 ">Agro</span>Merce
+            </Link>
+          </div>
+          <div className="navbar-start hidden lg:flex">
+            <div className="menu menu-horizontal gap-10 px-1">
+              <div
+                className={
+                  pathname === "/"
+                    ? "border-b-2 border-green-500 text-black"
+                    : "text-black"
+                }
+              >
+                <Link href="/">Home</Link>
+              </div>
+              <div
+                className={
+                  pathname === "/consultation"
+                    ? "border-b-2 border-green-500 text-black"
+                    : "text-black"
+                }
+              >
+                <Link href="/consultation">Consultation</Link>
+              </div>
+              <div
+                className={
+                  pathname === "/compare"
+                    ? "border-b-2 border-green-500 text-black"
+                    : "text-black"
+                }
+              >
+                <Link href="/compare">Compare</Link>
+              </div>
+            </div>
+          </div>
+          {isClient && (
+            <div className="navbar-end flex gap-8">
+              <CompareModal />
+              <div className="relative">
+                {cart.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs">
+                    {cart.length}
+                  </span>
+                )}
+                <Link href={"/cart"}>
+                  <button>
+                    <FaShoppingCart className="w-7 h-7" />
+                  </button>
+                </Link>
+              </div>
+              <Link href={"/favorite"}>
+                <button>
+                  <FaHeart className="w-7 h-7" />
+                </button>
+              </Link>
+              {status === "unauthenticated" ? (
+                <div className="btn text-white" onClick={() => signIn()}>
+                  {" "}
+                  Sign In
+                </div>
+              ) : (
+                <Link href={"/admin"} className="btn text-white">
+                  {" "}
+                  Dashboard
+                </Link>
+              )}
+            </div>
+          )}
+        </div>
+      </>
     );
   }
 
@@ -293,7 +310,7 @@ const Navbar = () => {
     pathname == "/admin/pra-planting" ||
     pathname == "/admin/post-planting" ||
     pathname == "/admin/add-product" ||
-    pathname == "/^\/admin\/all-product\/detail\/\d+$/"
+    pathname == "/^/admin/all-product/detail/d+$/"
   ) {
     return <SideNavbar />;
   }
