@@ -63,7 +63,7 @@ const TableAllProduct = async () => {
                 {product.desc}
               </p>
             </div>
-            <Action id={product.id} />
+            <Action product={product} id={product.id} />
           </div>
         ))
       ) : (

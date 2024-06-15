@@ -1,17 +1,68 @@
 "use client";
 
-import { Button, Modal } from "flowbite-react";
-import { useState } from "react";
+import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
+import { useEffect, useState, useRef } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { deleteProduct } from "@/lib/crudProduct/dbData";
+import { deleteProduct, editProduct } from "@/lib/crudProduct/dbData";
 
-const Action = ({ id }: { id: number }) => {
+const Action = ({ product }: any, { id }: { id: number }) => {
   const [openModalDelete, setOpenModalDelete] = useState(Boolean);
+  const [openModalEdit, setOpenModalEdit] = useState(Boolean);
+  const [openModalDetail, setOpenModaldetail] = useState();
+  const [name, setName]: any = useState();
+  const [stok, setStok]: any = useState();
+  const [price, setPrice]: any = useState();
+  const [category, setCategory]: any = useState();
+  const [desc, setDesc]: any = useState();
+  const [urlImage, seturlImage] : any = useState()
+  const [image, setImage]: any = useState();
+  const [productId, setProductId]: any = useState();
+  const refImg: any = useRef();
+  const productData = {
+    product_name: name,
+    stok: stok,
+    price: price,
+    product_category: category,
+    desc: desc,
+    url_image: urlImage
+  };
+
+  useEffect(() => {
+    const getData: any = async () => {
+      const data: any = await product;
+      setName(data.product_name);
+      setStok(data.stok);
+      setPrice(data.price);
+      setCategory(data.product_category);
+      setDesc(data.desc);
+      seturlImage(data.url_image);
+      setProductId(data.id);
+    };
+    getData();
+  }, []);
 
   const handleDeleteModal = async () => {
-     await deleteProduct(id)
-     setOpenModalDelete(false)
+    await deleteProduct(productId);
+    setOpenModalDelete(false);
   };
+
+  const handleSubmitEdit = async (e : any) => {
+    e.preventDefault()
+    await editProduct(productData, image, productId);
+    setName("");
+    setStok("");
+    setPrice();
+    setCategory("");
+    setDesc("");
+    seturlImage("")
+    setImage();
+    refImg.current.value = null;
+    setOpenModalEdit(false);
+  };
+
+  async function onCloseModalEdit() {
+    setOpenModalEdit(false);
+  }
 
   return (
     <>
@@ -39,6 +90,102 @@ const Action = ({ id }: { id: number }) => {
           </div>
         </Modal.Body>
       </Modal>
+      <Modal show={openModalEdit} onClose={onCloseModalEdit} size="3xl" popup>
+        <Modal.Header />
+        <Modal.Body>
+          <form onSubmit={(e : any) => handleSubmitEdit(e)} className="space-y-6 px-5">
+            <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+              Edit your Product Data
+            </h3>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="productName" value="Product Name" />
+              </div>
+              <input
+                id="productName"
+                placeholder="your product name..."
+                value={name}
+                onChange={(event: any) => setName(event.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-md bg-inherit focus:border-black"
+              />
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="stok" value="Stok" />
+              </div>
+              <input
+                id="stok"
+                placeholder="123"
+                type="number"
+                value={stok}
+                onChange={(event: any) => setStok(event.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="price" value="Price" />
+              </div>
+              <input
+                id="price"
+                placeholder="20000"
+                type="number"
+                value={price}
+                onChange={(event: any) => setPrice(event.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="category" value="Category" />
+              </div>
+              <select
+                id="category"
+                value={category}
+                onChange={(event: any) => setCategory(event.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-md"
+              >
+                <option value="">Select a category</option>
+                <option value="pra">Pra</option>
+                <option value="pasca">Pasca</option>
+                {/* Tambahkan opsi kategori lain sesuai kebutuhan */}
+              </select>
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="desc" value="Description" />
+              </div>
+              <textarea
+                id="desc"
+                placeholder="Product description..."
+                value={desc}
+                onChange={(event: any) => setDesc(event.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="image" value="Image" />
+              </div>
+              <input
+                ref={refImg}
+                id="image"
+                type="file"
+                onChange={(event: any) => setImage(event.target.files[0])}
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
+            <div className="w-full">
+              <Button type="submit">Submit</Button>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
       <div className="flex items-center ml-20 space-x-3.5">
         <button className="hover:text-primary">
           <svg
@@ -59,7 +206,10 @@ const Action = ({ id }: { id: number }) => {
             />
           </svg>
         </button>
-        <button onClick={() => setOpenModalDelete(true)} className="hover:text-red-500">
+        <button
+          onClick={() => setOpenModalDelete(true)}
+          className="hover:text-red-500"
+        >
           <svg
             className="fill-current"
             width="18"
@@ -86,7 +236,10 @@ const Action = ({ id }: { id: number }) => {
             />
           </svg>
         </button>
-        <button className="hover:text-primary">
+        <button
+          className="hover:text-primary"
+          onClick={() => setOpenModalEdit(true)}
+        >
           <svg
             width="18px"
             height="18px"
