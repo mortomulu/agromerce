@@ -16,14 +16,16 @@ import {
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+const url = process.env.NEXT_PUBLIC_BASE_URL
+
 export default function SideNavbar() {
   const pathname = usePathname();
   const router = useRouter();
 
   const handleLogout = async (e: any) => {
     e.preventDefault();
-    await signOut(); // Perlu menunggu proses signOut selesai sebelum mengarahkan pengguna
-    router.push("/"); // Mengarahkan pengguna ke halaman utama setelah logout
+    await signOut({ callbackUrl: `${url}`}); // Perlu menunggu proses signOut selesai sebelum mengarahkan pengguna
+    // router.push("/"); // Mengarahkan pengguna ke halaman utama setelah logout
   };
 
   return (
