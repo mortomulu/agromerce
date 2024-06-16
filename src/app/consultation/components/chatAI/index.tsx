@@ -177,7 +177,7 @@ const ChatAI = () => {
             id="prompt"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Type your message here..."
+            placeholder="Tuliskan yang mau anda tanyakan disini..."
             disabled={isLoading} // Disable input when loading
           />
           <button type="submit" disabled={isLoading}>

@@ -94,16 +94,15 @@ const Compare = () => {
     <Layout>
       <div className="min-h-screen pt-20">
         <div className="container mx-auto px-4 py-4 pb-8">
-          <h1 className="text-2xl font-semibold mb-4">Compare Page</h1>
+          <h1 className="text-2xl font-semibold mb-4">Hasil Komparasi Produk</h1>
           {comparison && (
             <div className="bg-white p-4 rounded-md shadow-md">
-              <h2 className="text-lg font-semibold mb-2">Messages:</h2>
               <table className="table-auto w-full">
                 <thead>
                   <tr>
-                    <th className="border px-4 py-2">Product</th>
-                    <th className="border px-4 py-2">Advantages</th>
-                    <th className="border px-4 py-2">Disadvantages</th>
+                    <th className="border px-4 py-2">Produk</th>
+                    <th className="border px-4 py-2">Kelebihan</th>
+                    <th className="border px-4 py-2">Kekurangan</th>
                   </tr>
                 </thead>
                 <tbody>

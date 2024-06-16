@@ -8,6 +8,7 @@ import { removeFromCart, updateQuantity } from "@/redux/slices/cartSlice";
 import router from "next/router";
 import { useSession } from "next-auth/react";
 import { FaTrashAlt } from "react-icons/fa";
+import { formatToRupiah } from "@/lib/formatPrice";
 
 const Cart = () => {
   const cartRedux = useSelector((state: RootState) => state.cart.products);
@@ -159,18 +160,19 @@ const Cart = () => {
   const handleCancelTransaction = () => {
     setTransactionInProgress(false);
     localStorage.removeItem("midtransTransaction");
-    
-    const element = document.getElementById("midtrans-payment-container") as HTMLElement;
+
+    const element = document.getElementById(
+      "midtrans-payment-container"
+    ) as HTMLElement;
     if (element) {
       element.innerHTML = "";
     }
-  
+
     // Reload the page after a short delay to ensure innerHTML is updated
     setTimeout(() => {
       window.location.reload();
     }, 100); // 100 milliseconds delay
   };
-  
 
   if (!isClient) {
     return <PreloadCart />;
@@ -179,7 +181,7 @@ const Cart = () => {
   return (
     <Layout>
       <div className="container mx-auto min-h-screen px-4 py-28">
-        <h1 className="text-xl font-bold mb-4">Shopping Cart</h1>
+        <h1 className="text-xl font-bold mb-4">Keranjang Belanja</h1>
         <div className="flex justify-between">
           {cartRedux.length === 0 ? (
             <p>Your cart is empty.</p>
@@ -202,7 +204,9 @@ const Cart = () => {
                           {item?.product?.product_name}
                         </h3>
                         <p className="text-green-500 font-medium">
-                          ${item?.product?.price * item?.quantity}
+                          {formatToRupiah(
+                            item?.product?.price * item?.quantity
+                          )}
                         </p>
                       </div>
                     </div>
@@ -262,7 +266,7 @@ const Cart = () => {
                       onClick={handleCancelTransaction}
                       className="py-3 px-5 font-bold bg-red-500 btn-primary text-white hover:bg-red-700"
                     >
-                      Cancel Transaction
+                      Batalkan Pembelian
                     </button>
                   )}
                 </div>
