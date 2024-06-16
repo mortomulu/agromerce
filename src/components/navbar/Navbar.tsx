@@ -292,11 +292,6 @@ const Navbar = () => {
                   </button>
                 </Link>
               </div>
-              <Link href={"/favorite"}>
-                <button>
-                  <FaHeart className="w-7 h-7" />
-                </button>
-              </Link>
               {status === "unauthenticated" ? (
                 <div className="btn text-white" onClick={() => signIn()}>
                   {" "}
