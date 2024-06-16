@@ -43,7 +43,7 @@ const Profile = () => {
       <div className="min-h-screen pt-24 px-12">
         <h1 className="text-3xl font-bold mb-6">Profile Page</h1>
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-2">Name: {profile.name}</h2>
+          <h2 className="text-xl font-semibold mb-2">Name: {profile?.name}</h2>
           <h2 className="text-xl font-semibold mb-2">Email: {session?.user?.email}</h2>
         </div>
         <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
