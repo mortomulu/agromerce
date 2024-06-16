@@ -69,6 +69,8 @@ const Cart = () => {
 
   const initializeMidtrans = (transaction: any) => {
     if (window.snap) {
+      const storedProfile = JSON.parse(localStorage.getItem("profile") || "{}");
+      const address = storedProfile.address;
       setIsInitialized(true);
       setTransactionInProgress(true);
       window.snap.embed(transaction.token, {
@@ -78,7 +80,7 @@ const Cart = () => {
           const detailTransaction = {
             id: result.transaction_id,
             buyer: session?.user?.email,
-            address: "Lowokwaru, Malang",
+            address: address,
             product: checkoutItems,
             price: result.gross_amount,
             date: result.transaction_time,
@@ -163,6 +165,13 @@ const Cart = () => {
     if (status === "unauthenticated") {
       alert("harus login terlebih dahulu");
       return;
+    }
+
+    const storedProfile = JSON.parse(localStorage.getItem("profile") || "{}");
+    const address = storedProfile.address;
+
+    if (!address) {
+      alert("isi alamat di halaman profile terlebih dahulu!");
     }
 
     if (checkoutItems.length === 0) {
