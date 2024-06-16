@@ -10,6 +10,7 @@ import {
 } from "@/redux/slices/cartSlice";
 import { addToCompare } from "@/redux/slices/compareSlice";
 import { useEffect } from "react";
+import { formatToRupiah } from "@/lib/formatPrice";
 
 interface Product {
   id: string;
@@ -82,7 +83,7 @@ export default function DetalProductModule(product: any) {
               </h1>
               <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
                 <p className="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white">
-                  ${product?.product[0].price}
+                  {formatToRupiah(product?.product[0].price)}
                 </p>
               </div>
               <div className="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
