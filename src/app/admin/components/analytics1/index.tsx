@@ -1,9 +1,65 @@
-import CardDataStats from "./CardDataStats";
+"use client"
 
-const CardAnalytics1 = () => {
+import CardDataStats from "./CardDataStats";
+import { useState, useEffect } from "react";
+import { formatToRupiah } from "@/lib/formatPrice";
+
+const countTotalProfitAndSoldItems = (items: any[]) => {
+  let totalProfit = 0;
+  let totalSoldItem = 0;
+
+  items.forEach((data: any) => {
+    totalProfit += data.price;
+    data.product.forEach((product: any) => {
+      totalSoldItem += product.quantity;
+    });
+  });
+
+  return { totalProfit, totalSoldItem };
+};
+
+const countTotalStokCart = (items: any[]) => {
+  let totalStokCart = 0;
+
+  items.forEach((data: any) => {
+    totalStokCart += data.quantity;
+  });
+
+  return totalStokCart;
+};
+
+const CardAnalytics1 = ({ totalProducts, totalStok }: { totalProducts: number; totalStok: number }) => {
+  const [itemSold, setItemSold] = useState<number>(0);
+  const [totalProfit, setTotalProfit] = useState<number>(0);
+  const [totalTransactions, setTotalTransactions] = useState<number>(0);
+  const [totalProduct, setTotalProduct] = useState<number>(0);
+  const [totalStock, setTotalStock] = useState<number>(0);
+  const [totalStokCart, setTotalStokCart] = useState<number>(0);
+
+  useEffect(() => {
+    const storedTransactions = JSON.parse(localStorage.getItem("transactions") || "[]");
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+    setTotalTransactions(storedTransactions.length);
+
+    const { totalProfit, totalSoldItem } = countTotalProfitAndSoldItems(storedTransactions);
+    setTotalProfit(totalProfit);
+    setItemSold(totalSoldItem);
+    setTotalProduct(totalProducts);
+    setTotalStock(totalStok);
+    setTotalStokCart(countTotalStokCart(cart));
+  }, [totalProducts, totalStok]);
+
+  console.log(totalTransactions);
+  console.log(formatToRupiah(totalProfit));
+  console.log(itemSold);
+  console.log(totalProduct);
+  console.log(totalStock);
+  console.log(totalStokCart);
+
   return (
     <div className="ml-56 p-10 w-full grid grid-cols-2 gap-4 md:grid-cols-2 md:gap-6 2xl:gap-7.5">
-      <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
+      <CardDataStats title="Total Profit" total={formatToRupiah(totalProfit)}  levelUp>
         <svg
           className="fill-green-500 dark:fill-white"
           width="22"
@@ -22,7 +78,7 @@ const CardAnalytics1 = () => {
           />
         </svg>
       </CardDataStats>
-      <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
+      <CardDataStats title="Total Transactions" total={totalTransactions}  levelUp>
         <svg
           className="fill-green-500 dark:fill-white"
           width="20"
@@ -45,7 +101,7 @@ const CardAnalytics1 = () => {
           />
         </svg>
       </CardDataStats>
-      <CardDataStats title="Total Product" total="2.450" rate="2.59%" levelUp>
+      <CardDataStats title="Item Sold" total={itemSold}  levelUp>
         <svg
           className="fill-green-500 dark:fill-white"
           width="22"
@@ -64,7 +120,7 @@ const CardAnalytics1 = () => {
           />
         </svg>
       </CardDataStats>
-      <CardDataStats title="Total Users" total="3.456" rate="0.95%" levelDown>
+      <CardDataStats title="Total Product" total={totalProduct} levelDown>
         <svg
           className="fill-green-500 dark:fill-white"
           width="22"
@@ -87,7 +143,7 @@ const CardAnalytics1 = () => {
           />
         </svg>
       </CardDataStats>
-      <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
+      <CardDataStats title="Total Stok Product" total={totalStock}  levelUp>
         <svg
           className="fill-green-500 dark:fill-white"
           width="22"
@@ -106,7 +162,7 @@ const CardAnalytics1 = () => {
           />
         </svg>
       </CardDataStats>
-      <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
+      <CardDataStats title="Total Product on Cart" total={totalStokCart}  levelUp>
         <svg
           className="fill-green-500 dark:fill-white"
           width="20"

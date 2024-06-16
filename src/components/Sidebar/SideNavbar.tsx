@@ -15,6 +15,8 @@ import {
 } from "react-icons/hi";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { BiSolidShoppingBags } from "react-icons/bi";
+
 
 const url = process.env.NEXT_PUBLIC_BASE_URL
 
@@ -48,11 +50,11 @@ export default function SideNavbar() {
           </div>
           <div
             className={
-              pathname == "/admin/users" ? "bg-green-200 rounded-lg" : ""
+              pathname == "/admin/transactions" ? "bg-green-200 rounded-lg" : ""
             }
           >
-            <Sidebar.Item href="/admin/users" icon={HiUser}>
-              Users
+            <Sidebar.Item href="/admin/transactions" icon={BiSolidShoppingBags}>
+              Transactions
             </Sidebar.Item>
           </div>
 
@@ -68,10 +70,6 @@ export default function SideNavbar() {
             label="Products"
           >
             <Sidebar.Item href="/admin/all-product">All Product</Sidebar.Item>
-            <Sidebar.Item href="/admin/pra-planting">Pra-Planting</Sidebar.Item>
-            <Sidebar.Item href="/admin/post-planting">
-              Post-Planting
-            </Sidebar.Item>
           </Sidebar.Collapse>
           <div
             className={

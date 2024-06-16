@@ -5,7 +5,7 @@ import { FaHeart } from "react-icons/fa";
 import { FaBalanceScale } from "react-icons/fa";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import SideNavbar from "../Sidebar/SideNavbar";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/index";
@@ -18,6 +18,7 @@ import { setMessage } from "@/redux/slices/messagesSlice";
 import { useRouter } from "next/navigation";
 import { ClipLoader } from "react-spinners";
 import { Button, Spinner } from "flowbite-react";
+import { CgProfile } from "react-icons/cg";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -27,6 +28,7 @@ const Navbar = () => {
     (state: RootState) => state.compare.products
   );
   const [isClient, setIsClient] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const dispatch = useDispatch();
   const API_KEY = process.env.NEXT_SECRET_OPENAI_API_KEY;
   const router = useRouter();
@@ -212,6 +214,14 @@ const Navbar = () => {
     );
   };
 
+  const handleProfileClick = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const handleSignOut = () => {
+    signOut();
+  };
+
   if (
     pathname == "/" ||
     /^\/detail-product\/\d+$/.test(pathname) ||
@@ -219,7 +229,9 @@ const Navbar = () => {
     pathname == "/compare" ||
     pathname == "/cart" ||
     pathname == "/favorite" ||
-    pathname == "/thanks"
+    pathname == "/thanks" ||
+    pathname == "/gross-history" ||
+    pathname == "/profile"
   ) {
     return (
       <>
@@ -266,7 +278,7 @@ const Navbar = () => {
             </div>
           </div>
           {isClient && (
-            <div className="navbar-end flex gap-8">
+            <div className="navbar-end flex items-center mr-4 gap-8">
               <CompareModal />
               <div className="relative">
                 {cart.length > 0 && (
@@ -280,21 +292,35 @@ const Navbar = () => {
                   </button>
                 </Link>
               </div>
-              <Link href={"/favorite"}>
-                <button>
-                  <FaHeart className="w-7 h-7" />
-                </button>
-              </Link>
               {status === "unauthenticated" ? (
                 <div className="btn text-white" onClick={() => signIn()}>
                   {" "}
                   Log In
                 </div>
               ) : (
-                <Link href={"/admin"} className="btn text-white">
-                  {" "}
-                  Dashboard
-                </Link>
+                <div className="relative">
+                  <button onClick={handleProfileClick}>
+                    <CgProfile className="bg-white text-black h-8 w-8" />
+                  </button>
+                  {dropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                      <div className="py-1">
+                        <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          Profile
+                        </Link>
+                        <Link href="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          Dashboard
+                        </Link>
+                        <button
+                          onClick={handleSignOut}
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          Sign Out
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           )}
@@ -310,6 +336,7 @@ const Navbar = () => {
     pathname == "/admin/pra-planting" ||
     pathname == "/admin/post-planting" ||
     pathname == "/admin/add-product" ||
+    pathname == "/admin/transactions" ||
     pathname == "/^/admin/all-product/detail/d+$/"
   ) {
     return <SideNavbar />;
