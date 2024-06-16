@@ -1,19 +1,20 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Button } from "flowbite-react";
 import { postProduct } from "@/lib/crudProduct/dbData";
 import { revalidatePath } from "next/cache";
+import { Button, Spinner } from "flowbite-react";
 
 const FormAddProduct = () => {
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
-  const [stock, setStock] = useState<number | "">("")
+  const [stock, setStock] = useState<number | "">("");
   const [price, setPrice] = useState<number | "">("");
   const [category, setCategory] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [img, setImg] = useState<File | null>(null);
   const refImg: any = useRef();
+  const [isLoading, setIsLoading] = useState(false);
 
   const changeTextColor = () => {
     setIsOptionSelected(true);
@@ -21,7 +22,7 @@ const FormAddProduct = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setIsLoading(true);
     if (!name || !price || !category || !desc || !img) {
       console.error("Please fill in all fields");
       return;
@@ -41,31 +42,31 @@ const FormAddProduct = () => {
       await postProduct(formData, fileImage);
       console.log("Product added successfully");
 
-      
       // await fetch('/api/revalidate', {
-        //   method: 'POST',
-        // });
-        
-        // Tweet the product details
-        // await fetch('/api/tweet', {
-          //   method: 'POST',
-          //   headers: {
-            //     'Content-Type': 'application/json',
-            //   },
-            //   body: JSON.stringify({ name, price, category, desc }),
-            // });
-            
-            // console.log("Tweet posted successfully");
-            
-            setName("");
-            setStock("");
-            setPrice("");
-            setCategory("");
-            setDesc("");
-            setImg(null);
-            refImg.current.value = null;
-            revalidatePath('/admin/all-product')
-          } catch (error) {
+      //   method: 'POST',
+      // });
+
+      // Tweet the product details
+      // await fetch('/api/tweet', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ name, price, category, desc }),
+      // });
+
+      // console.log("Tweet posted successfully");
+      setIsLoading(false);
+      setName("");
+      setStock("");
+      setPrice("");
+      setCategory("");
+      setDesc("");
+      setImg(null);
+      refImg.current.value = null;
+      revalidatePath("/admin/all-product");
+    } catch (error) {
+      setIsLoading(false);
       console.error("Error adding product or posting tweet:", error);
     }
   };
@@ -177,8 +178,16 @@ const FormAddProduct = () => {
               className="px-6 bg-green-500"
               color="blue"
               pill
+              disabled={isLoading}
             >
-              Submit
+              {isLoading ? (
+                <>
+                  <Spinner aria-label="Spinner button example" size="sm" />
+                  <span className="pl-3">Loading...</span>
+                </>
+              ) : (
+                "Submit"
+              )}
             </Button>
           </form>
         </div>

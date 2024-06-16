@@ -1,10 +1,11 @@
 "use client";
 
-import { Button, Label, Modal } from "flowbite-react";
+import { Button, Label, Modal, Spinner } from "flowbite-react";
 import { useEffect, useState, useRef } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { deleteProduct, editProduct } from "@/lib/crudProduct/dbData";
 import Link from "next/link";
+import { formatToRupiah } from "@/lib/formatPrice";
 
 const Action = ({ product }: any, { id }: { id: number }) => {
   const [openModalDelete, setOpenModalDelete] = useState(false);
@@ -19,6 +20,7 @@ const Action = ({ product }: any, { id }: { id: number }) => {
   const [image, setImage]: any = useState(null);
   const [productId, setProductId] = useState(0);
   const refImg: any = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const productData = {
     id: productId,
@@ -45,12 +47,15 @@ const Action = ({ product }: any, { id }: { id: number }) => {
   }, [product]);
 
   const handleDeleteModal = async () => {
+    setIsLoading(true);
     await deleteProduct(productId);
     setOpenModalDelete(false);
+    setIsLoading(false);
   };
 
   const handleSubmitEdit = async (e: any) => {
     e.preventDefault();
+    setIsLoading(true);
     await editProduct(productData, image, productId);
     setName("");
     setStok(0);
@@ -60,6 +65,7 @@ const Action = ({ product }: any, { id }: { id: number }) => {
     seturlImage("");
     setImage(null);
     if (refImg.current) refImg.current.value = null;
+    setIsLoading(false);
     setOpenModalEdit(false);
   };
 
@@ -84,8 +90,15 @@ const Action = ({ product }: any, { id }: { id: number }) => {
               Are you sure you want to delete this product?
             </h3>
             <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={() => handleDeleteModal()}>
-                {"Yes, I'm sure"}
+              <Button color="failure" disabled={isLoading} onClick={() => handleDeleteModal()}>
+                {isLoading ? (
+                  <>
+                    <Spinner aria-label="Spinner button example" size="sm" />
+                    <span className="pl-3">Loading...</span>
+                  </>
+                ) : (
+                  "Yes, Delete"
+                )}
               </Button>
               <Button color="gray" onClick={() => setOpenModalDelete(false)}>
                 No, cancel
@@ -191,7 +204,16 @@ const Action = ({ product }: any, { id }: { id: number }) => {
               </div>
             </div>
             <div className="w-full">
-              <Button type="submit">Submit</Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Spinner aria-label="Spinner button example" size="sm" />
+                    <span className="pl-3">Loading...</span>
+                  </>
+                ) : (
+                  "Update"
+                )}
+              </Button>
             </div>
           </form>
         </Modal.Body>
@@ -220,7 +242,7 @@ const Action = ({ product }: any, { id }: { id: number }) => {
             </div>
             <div>
               <strong>Price:</strong>
-              <p>{price}</p>
+              <p>{formatToRupiah(price)}</p>
             </div>
             <div>
               <strong>Category:</strong>

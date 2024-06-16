@@ -3,12 +3,16 @@ import { configureStore } from '@reduxjs/toolkit';
 import cartReducer, { initializeCart } from './slices/cartSlice';
 import compareReducer, { initializeCompare } from './slices/compareSlice';
 import messagesReducer, { initializeMessage } from './slices/messagesSlice';
+import productReducer from './slices/productSlice'; // Import productReducer
+import filterReducer from './slices/filterSlice'; // Import filterReducer
 
 export const store = configureStore({
   reducer: {
     cart: cartReducer,
     compare: compareReducer,
     messages: messagesReducer,
+    products: productReducer, // Add product reducer
+    filter: filterReducer, // Add filter reducer
   },
 });
 
