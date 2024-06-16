@@ -11,8 +11,8 @@ export const LandingPage = async () => {
     <div>
       <Layout>
         <BannerLanding />
-        <div className="flex mx-8 pb-8">
-          <CategoryBar />
+        <div >
+          {/* <CategoryBar /> */}
           <Products products={products} />
         </div>
       </Layout>
