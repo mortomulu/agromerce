@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { deleteProduct, editProduct } from "@/lib/crudProduct/dbData";
 import Link from "next/link";
+import { formatToRupiah } from "@/lib/formatPrice";
 
 const Action = ({ product }: any, { id }: { id: number }) => {
   const [openModalDelete, setOpenModalDelete] = useState(false);
@@ -241,7 +242,7 @@ const Action = ({ product }: any, { id }: { id: number }) => {
             </div>
             <div>
               <strong>Price:</strong>
-              <p>{price}</p>
+              <p>{formatToRupiah(price)}</p>
             </div>
             <div>
               <strong>Category:</strong>

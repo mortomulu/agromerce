@@ -2,6 +2,7 @@ import { Product } from "@/types/product";
 import Action from "./Action";
 import { getProducts } from "@/lib/crudProduct/dbData";
 import Image from "next/image";
+import { formatToRupiah } from "@/lib/formatPrice";
 
 const TableAllProduct = async () => {
   const todos = await getProducts();
@@ -55,7 +56,7 @@ const TableAllProduct = async () => {
             </div>
             <div className="col-span-1 flex items-center justify-center">
               <p className="text-sm text-black dark:text-white">
-                ${product.price}
+              {formatToRupiah(product.price)}
               </p>
             </div>
             <div className="col-span-2 flex items-center ml-8">

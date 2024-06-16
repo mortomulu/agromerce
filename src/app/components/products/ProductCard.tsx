@@ -6,6 +6,7 @@ import { Product } from "@/types/product";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { formatToRupiah } from "@/lib/formatPrice";
 
 interface CardDataProps {
   todo: Product;
@@ -39,7 +40,7 @@ const ProductCard: React.FC<CardDataProps> = ({ todo }) => {
             {fav ? <FaHeart /> : <FaRegHeart />}
           </div>
         </div>
-        <p className="text-sm">$ {todo.price}</p>
+        <p className="text-sm">{formatToRupiah(todo.price)}</p>
         <Link href={`/detail-product/${todo.id}`}>
           <div className="flex border justify-center mt-4 py-2">
             view detail
