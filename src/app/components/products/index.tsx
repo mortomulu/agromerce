@@ -89,7 +89,7 @@ const Products: React.FC<ProductsProps> = ({ products }) => {
       <div className="flex justify-center mt-4">
         <nav>
           <ul className="flex list-none">
-            {[...Array(Math.ceil(filteredProducts.length / productsPerPage)).keys()].map((number) => (
+            {Array.from({ length: Math.ceil(filteredProducts.length / productsPerPage) }, (_, number) => (
               <li key={number} className="mx-1">
                 <button
                   onClick={() => paginate(number + 1)}
