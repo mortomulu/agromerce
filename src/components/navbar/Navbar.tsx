@@ -311,6 +311,7 @@ const Navbar = () => {
     pathname == "/admin/pra-planting" ||
     pathname == "/admin/post-planting" ||
     pathname == "/admin/add-product" ||
+    pathname == "/admin/transactions" ||
     pathname == "/^/admin/all-product/detail/d+$/"
   ) {
     return <SideNavbar />;

@@ -77,6 +77,8 @@ const Cart = () => {
           console.log(result);
           const detailTransaction = {
             id: result.transaction_id,
+            buyer: session?.user?.email,
+            address: "Lowokwaru, Malang",
             product: checkoutItems,
             price: result.gross_amount,
             date: result.transaction_time,
