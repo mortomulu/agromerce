@@ -36,9 +36,7 @@ const ProductCard: React.FC<CardDataProps> = ({ todo }) => {
       <div className="card-body p-5">
         <div className="card-title flex justify-between truncate">
           <h2 className="text-sm w-40 truncate">{todo.product_name}</h2>
-          <div onClick={() => setFav(!fav)}>
-            {fav ? <FaHeart /> : <FaRegHeart />}
-          </div>
+          
         </div>
         <p className="text-sm">{formatToRupiah(todo.price)}</p>
         <Link href={`/detail-product/${todo.id}`}>
