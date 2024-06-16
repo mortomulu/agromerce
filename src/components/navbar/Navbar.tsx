@@ -219,7 +219,8 @@ const Navbar = () => {
     pathname == "/compare" ||
     pathname == "/cart" ||
     pathname == "/favorite" ||
-    pathname == "/thanks"
+    pathname == "/thanks" ||
+    pathname == "/gross-history"
   ) {
     return (
       <>

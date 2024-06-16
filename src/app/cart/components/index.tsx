@@ -9,6 +9,7 @@ import router from "next/router";
 import { useSession } from "next-auth/react";
 import { FaTrashAlt } from "react-icons/fa";
 import { formatToRupiah } from "@/lib/formatPrice";
+import Link from "next/link";
 
 const Cart = () => {
   const cartRedux = useSelector((state: RootState) => state.cart.products);
@@ -18,6 +19,9 @@ const Cart = () => {
   const [transactionInProgress, setTransactionInProgress] = useState(false); // To track if a transaction is in progress
   const dispatch = useDispatch();
   const { data: session, status } = useSession();
+  const checkoutItems = cartRedux.filter((item) =>
+    checkedItems.includes(item.id)
+  );
 
   console.log(session?.user);
 
@@ -71,9 +75,36 @@ const Cart = () => {
         embedId: "midtrans-payment-container",
         onSuccess: function (result: any) {
           console.log(result);
-          localStorage.removeItem("midtransTransaction"); // Clear token after successful payment
+          const detailTransaction = {
+            id: result.transaction_id,
+            product: checkoutItems,
+            price: result.gross_amount,
+            date: result.transaction_time,
+          };
+          console.log(detailTransaction);
+
+          // Mendapatkan nilai yang sudah ada dari localStorage
+          const existingTransactions = JSON.parse(
+            localStorage.getItem("transactions") || "[]"
+          );
+
+          // Menambahkan detailTransaction ke dalam array existingTransactions
+          const updatedTransactions = [
+            ...existingTransactions,
+            detailTransaction,
+          ];
+          console.log(updatedTransactions);
+
+          // Menyimpan array yang diperbarui kembali ke localStorage
+          localStorage.setItem(
+            "transactions",
+            JSON.stringify(updatedTransactions)
+          );
+
+          // Menghapus item "midtransTransaction" dari localStorage
+          localStorage.removeItem("midtransTransaction");
+
           setTransactionInProgress(false);
-          router.push("/thanks");
         },
         onPending: function (result: any) {
           console.log(result);
@@ -181,10 +212,27 @@ const Cart = () => {
   return (
     <Layout>
       <div className="container mx-auto min-h-screen px-4 py-28">
-        <h1 className="text-xl font-bold mb-4">Keranjang Belanja</h1>
+        <div className="flex mb-4 border w-fit border-black  overflow-hidden">
+          <Link
+            href={"/cart"}
+            className="px-4 py-3 border-r border-black bg-white hover:bg-blue-100 transition-colors duration-200 ease-in-out"
+          >
+            <h1 className="text-lg font-bold text-blue-600">
+              Keranjang Belanja
+            </h1>
+          </Link>
+          <Link
+            href={"/gross-history"}
+            className="px-4 py-3 bg-gray-100 hover:bg-gray-200 transition-colors duration-200 ease-in-out"
+          >
+            <h1 className="text-lg text-gray-400 font-bold">
+              Riwayat Pembelian
+            </h1>
+          </Link>
+        </div>
         <div className="flex justify-between">
           {cartRedux.length === 0 ? (
-            <p>Your cart is empty.</p>
+            <p>Keranjang Belanja Kamu Kosong.</p>
           ) : (
             <div className="flex flex-col w-[550px]">
               {cartRedux.map((item: any, i) => (
