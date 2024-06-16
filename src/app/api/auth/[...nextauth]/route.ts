@@ -14,6 +14,12 @@ const user: any = {
   email: "fajrihidayat@gmail.com",
   role: "admin",
 };
+const user1: any = {
+  id: 1,
+  first_name: "fajri hidayat",
+  email: "fajrihidayat@gmail.com",
+  role: "admin",
+};
 
 
 const authOptions :  NextAuthOptions = {
@@ -36,7 +42,7 @@ const authOptions :  NextAuthOptions = {
         };
         
         if (email == emailAdmin  && password == passwordAdmin) {
-          return user;
+          return user1;
         } else {
           return null;
         }
