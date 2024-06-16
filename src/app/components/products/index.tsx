@@ -62,65 +62,86 @@ const Products: React.FC<ProductsProps> = ({ products }) => {
 
   return (
     <div className="flex mx-8 pb-8">
-      <ul className="sticky top-24 py-4 px-1 text-start text-sm flex flex-col gap-1 text-black  bg-white w-56 h-52 rounded-box border border-green-500">
+      <ul className="sticky top-24 py-4 px-1 text-sm flex flex-col gap-1 text-black bg-white w-56 h-52 rounded-box border border-green-500">
         <li
           className={
-            category === "all" ? "bg-green-200 font-bold text-black rounded-lg py-2 pl-3" : "py-2 pl-2"
+            category === "all"
+              ? "bg-green-200 font-bold text-black rounded-lg py-2 pl-3"
+              : "py-2 pl-3"
           }
         >
-          <button onClick={() => handleCategory("all")}>All Product</button>
+          <button
+            className="w-full text-left"
+            onClick={() => handleCategory("all")}
+          >
+            Semua Produk
+          </button>
         </li>
         <li
           className={
-            category === "pra" ? "bg-green-200 font-bold text-black rounded-lg py-2 pl-2" : "py-2 pl-2"
+            category === "pra"
+              ? "bg-green-200 font-bold text-black rounded-lg py-2 pl-3"
+              : "py-2 pl-3"
           }
         >
-          <button onClick={() => handleCategory("pra")}>Pra-Planting</button>
+          <button
+            className="w-full text-left"
+            onClick={() => handleCategory("pra")}
+          >
+            Produk Pra Tanam
+          </button>
         </li>
         <li
           className={
-            category === "pasca" ? "bg-green-200 font-bold text-black rounded-lg py-2 pl-2" : "py-2 pl-2"
+            category === "pasca"
+              ? "bg-green-200 font-bold text-black rounded-lg py-2 pl-3"
+              : "py-2 pl-3"
           }
         >
-          <button onClick={() => handleCategory("pasca")}>
-            Pasca-Planting
+          <button
+            className="w-full text-left"
+            onClick={() => handleCategory("pasca")}
+          >
+            Produk Pasca Tanam
           </button>
         </li>
       </ul>
       <div className="p-2 bg-white ml-4 pt-10 rounded-2xl border border-green-500">
         <form
           onSubmit={handleSearch}
-          className="flex justify-between mb-10 mx-8"
+          className="flex justify-between mb-10 mx-8 items-center"
         >
-          <div className="mb-4 w-1/2 pr-2">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+          <div className="flex w-full h-fit">
+            <div className=" w-1/2 pr-2">
+              <input
+                type="text"
+                placeholder="Cari Produk..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* Dropdown Filter */}
+            <div className="w-1/4 pl-2">
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Urutkan Harga</option>
+                <option value="min">Harga Terendah</option>
+                <option value="max">Harga Tertinggi</option>
+              </select>
+            </div>
           </div>
 
-          {/* Dropdown Filter */}
-          <div className="w-1/4 pl-2">
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">Select Sorting</option>
-              <option value="min">Minimum Price</option>
-              <option value="max">Maximum Price</option>
-            </select>
-          </div>
-
-          <div className="w-1/4 pl-2">
+          <div className="w-1/6 pl-2">
             <button
               type="submit"
               className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             >
-              Search
+              Cari
             </button>
           </div>
         </form>

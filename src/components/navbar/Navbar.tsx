@@ -147,7 +147,7 @@ const Navbar = () => {
               <IoClose className="text-lg" />
             </button>
             <div className="py-4 px-6">
-              <h2 className="text-lg font-bold mb-4">Compare Products</h2>
+              <h2 className="text-lg font-bold mb-4">Komparasi Produk</h2>
               <div className="bg-gray-100 p-4 rounded-md">
                 {compare.length > 0 ? (
                   <>
@@ -178,7 +178,7 @@ const Navbar = () => {
                     ))}
                   </>
                 ) : (
-                  <p className="text-gray-700">No products to compare.</p>
+                  <p className="text-gray-700">Tidak ada produk yang di komparasi</p>
                 )}
               </div>
               {compare.length >= 2 ? (
@@ -193,7 +193,7 @@ const Navbar = () => {
                       <span className="pl-3">Loading...</span>
                     </>
                   ) : (
-                    "Ready to Compare!"
+                    "Komparasi sekarang!"
                   )}
                 </button>
               ) : (
@@ -202,7 +202,7 @@ const Navbar = () => {
                   disabled
                   className="mt-4 w-full px-4 py-2 bg-gray-500 text-white rounded-md focus:outline-none"
                 >
-                  Ready to Compare!
+                  Komparasi sekarang!
                 </button>
               )}
             </div>
@@ -239,29 +239,29 @@ const Navbar = () => {
               <div
                 className={
                   pathname === "/"
-                    ? "border-b-2 border-green-500 text-black"
+                    ? "border-b-2 border-green-500  pb-2 px-4 text-black"
                     : "text-black"
                 }
               >
-                <Link href="/">Home</Link>
+                <Link href="/">Beranda</Link>
               </div>
               <div
                 className={
                   pathname === "/consultation"
-                    ? "border-b-2 border-green-500 text-black"
+                    ? "border-b-2 border-green-500 text-black pb-2 px-4"
                     : "text-black"
                 }
               >
-                <Link href="/consultation">Consultation</Link>
+                <Link href="/consultation">Konsultasi</Link>
               </div>
               <div
                 className={
                   pathname === "/compare"
-                    ? "border-b-2 border-green-500 text-black"
+                    ? "border-b-2 border-green-500  text-black pb-2 px-4"
                     : "text-black"
                 }
               >
-                <Link href="/compare">Compare</Link>
+                <Link href="/compare">Komparasi Produk</Link>
               </div>
             </div>
           </div>
@@ -288,7 +288,7 @@ const Navbar = () => {
               {status === "unauthenticated" ? (
                 <div className="btn text-white" onClick={() => signIn()}>
                   {" "}
-                  Sign In
+                  Log In
                 </div>
               ) : (
                 <Link href={"/admin"} className="btn text-white">
