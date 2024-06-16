@@ -219,7 +219,8 @@ const Navbar = () => {
     pathname == "/compare" ||
     pathname == "/cart" ||
     pathname == "/favorite" ||
-    pathname == "/thanks"
+    pathname == "/thanks" ||
+    pathname == "/gross-history"
   ) {
     return (
       <>
@@ -310,6 +311,7 @@ const Navbar = () => {
     pathname == "/admin/pra-planting" ||
     pathname == "/admin/post-planting" ||
     pathname == "/admin/add-product" ||
+    pathname == "/admin/transactions" ||
     pathname == "/^/admin/all-product/detail/d+$/"
   ) {
     return <SideNavbar />;
