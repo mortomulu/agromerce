@@ -48,18 +48,18 @@ const GrossHistory = () => {
   return (
     <Layout>
       <div className="container mx-auto min-h-screen px-4 py-28">
-        <div className="flex mb-4 border w-fit border-black rounded-lg overflow-hidden">
+        <div className="flex mb-4  w-fit overflow-hidden">
           <Link
             href={"/cart"}
-            className="px-4 py-3 hover:bg-gray-200 transition-colors duration-200 ease-in-out"
+            className="px-4 py-3  transition-colors duration-200 ease-in-out"
           >
-            <h1 className="text-lg text-gray-400 font-bold">Keranjang Belanja</h1>
+            <h1 className="text-lg text-gray-400 hover:text-black transition-colors duration-500 ease-in-out font-bold">Keranjang Belanja</h1>
           </Link>
           <Link
             href={"/gross-history"}
-            className="px-4 py-3 bg-gray-100 border-l border-black hover:bg-blue-100 transition-colors duration-200 ease-in-out"
+            className="px-4 py-3  border-b-4  border-green-500 transition-colors duration-200 ease-in-out"
           >
-            <h1 className="text-lg font-bold text-blue-600">Riwayat Pembelian</h1>
+            <h1 className="text-lg font-bold text-black">Riwayat Pembelian</h1>
           </Link>
         </div>
 
