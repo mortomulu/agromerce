@@ -138,7 +138,6 @@ const ChatAI = () => {
       const formattedResponse = data.choices[0].message.content
         .replace(/\n/g, "<br />")
         .replace(/(\d+\.\s)/g, "<strong>$1</strong>");
-
       displayResponse(formattedResponse);
     } catch (error) {
       console.error("Error:", error);
@@ -149,6 +148,7 @@ const ChatAI = () => {
 
   const displayResponse = (text: any) => {
     setRespond("");
+    setRespond(text[0])
     let index = 0;
     const intervalId = setInterval(() => {
       if (index < text.length - 1) {
@@ -159,6 +159,7 @@ const ChatAI = () => {
       }
     }, 20);
   };
+
 
   return (
     <div className="flex flex-col pt-28 p-10 h-screen">
