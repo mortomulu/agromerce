@@ -172,6 +172,7 @@ const Cart = () => {
 
     if (!address) {
       alert("isi alamat di halaman profile terlebih dahulu!");
+      return
     }
 
     if (checkoutItems.length === 0) {
