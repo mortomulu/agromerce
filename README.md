@@ -1,7 +1,7 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Email: fajrihidayat@gmail.com
-## pass: fajri1234567
+## pass: fajri12345678
 
 ## Getting Started
 
